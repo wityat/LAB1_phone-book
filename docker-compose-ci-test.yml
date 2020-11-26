@@ -1,0 +1,60 @@
+version: "3.3"
+
+services:
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - "./test.env"
+    restart: always
+
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    volumes:
+      - ./storage/redis/data:/data
+    restart: always
+
+  tgbot:
+    container_name: tgbot
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - docker.pkg.github.com/pip-install-hse/destreambot/tg_bot:latest
+    image: docker.pkg.github.com/pip-install-hse/destreambot/tg_bot:latest
+    working_dir: "/code/tg_bot"
+    depends_on:
+      - db
+    env_file:
+      - "./test.env"
+    volumes:
+      - .:/code/tg_bot
+    command: python start_tg_bot.py
+    restart: always
+
+  celery:
+    container_name: celery
+    build: .
+    working_dir: "/code/tg_bot"
+    command: celery -A adminka worker -l info
+    env_file:
+      - "./test.env"
+    volumes:
+      - .:/code/tg_bot
+    depends_on:
+      - redis
+
+  celery-beat:
+    container_name: celery-beat
+    build: .
+    working_dir: "/code/tg_bot"
+    command: sh -c "rm -rf celerybeat.pid && celery -A adminka beat -l info"
+    env_file:
+      - "./test.env"
+    volumes:
+      - .:/code/tg_bot
+    depends_on:
+      - redis
