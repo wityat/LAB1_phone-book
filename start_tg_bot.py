@@ -18,5 +18,5 @@ async def on_startup(dp):
 
 
 from tg_bot.dialogs.users.handlers import dp
-from tg_bot.dialogs.admin.handlers import dp
+from tg_bot.dialogs.general.handlers import dp
 executor.start_polling(dp, on_shutdown=on_shutdown, on_startup=on_startup, skip_updates=True)

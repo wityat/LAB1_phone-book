@@ -1,8 +1,10 @@
-import asyncio
 from tortoise.models import Model
 from tortoise import fields
 from hashlib import sha256
 import re
+
+from tg_bot.db.exceptions import ValidateError
+from tg_bot.db import exceptions_texts
 
 
 class BotUser(Model):
@@ -14,7 +16,7 @@ class BotUser(Model):
         return self.tg_id
 
 
-class PhoneBook(Model):
+class PhoneBookRow(Model):
     first_name = fields.CharField(max_length=255, default="")
     last_name = fields.CharField(max_length=255, default="")
     hash_name = fields.CharField(max_length=64, pk=True)
@@ -27,17 +29,29 @@ class PhoneBook(Model):
         try:
             self.phone = re.match(r"[\d]+", self.phone).group()
         except AttributeError:
-            pass
-        if len(self.phone) == 11:
-            return True
+            raise ValidateError(exceptions_texts.numbers_phone())
+        if not len(self.phone) == 11:
+            raise ValidateError(exceptions_texts.len_phone())
 
-    def save(self):
+    def validate_names(self):
+        import string
+        fn = any(x for x in string.punctuation if x in self.first_name)
+        ln = any(x for x in string.punctuation if x in self.first_name)
+        if not fn or not ln:
+            raise ValidateError(exceptions_texts.punctuation_names())
         self.first_name.title()
         self.last_name.title()
+
+    def validate(self):
+        self.validate_phone()
+        self.validate_names()
+
+    def save(self):
+        self.validate()
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
         super().save()
 
     def __str__(self):
-        return self.tg_id
+        return f"{self.first_name} {self.last_name}\n{self.phone}\n{self.birth_day if self.birth_day else ''}"
 
 # aerich init -t config.TORTOISE_ORM && aerich init-db && aerich migrate && aerich upgrade && 
