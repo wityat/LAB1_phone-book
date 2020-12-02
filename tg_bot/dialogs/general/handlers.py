@@ -55,7 +55,7 @@ async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: B
         await GetDataEasy.me.set()
     elif get_data_way == "hard":
         await GetDataHard.first_name.set()
-        await edit_or_send_message(bot, callback, text=texts.get_data_hard(), kb=keyboards.get_data_hard())
+        await edit_or_send_message(bot, callback, text=texts.get_data_hard(await state.get_state()), kb=keyboards.get_data_hard())
     await callback.answer()
 
 
