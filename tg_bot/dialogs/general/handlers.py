@@ -19,8 +19,6 @@ from ...modules.states import *
 
 
 async def menu(message: types.Message, state: FSMContext):
-    data = await get_kwargs_from_state(state)
-    await state.update_data({k: None for k, v in data.items()})
     await edit_or_send_message(bot, message, text=texts.menu(), kb=keyboards.menu())
 
 
@@ -64,7 +62,7 @@ async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: B
 @dp.message_handler(state=GetDataEasy.me)
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
-    args = [arg.replace("%", "") for arg in args]
+    args = [arg.replace("%", None) for arg in args]
     data = get_kwargs_from_args(args)
     await state.update_data(data)
     await state.reset_state(with_data=False)
