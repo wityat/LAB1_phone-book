@@ -29,7 +29,7 @@ async def get_birth_day_soon():
     rows = []
     async for row in PhoneBookRow.all():
         if (row.birth_day and ((row.birth_day.day >= now.day and row.birth_day.month == now.month) or
-                               (row.birth_day.day <= now.day and row.birth_day.month == (now.month + 1) if now.month+1 <= 12 else 1))):
+                               (row.birth_day.day <= now.day and row.birth_day.month == ((now.month + 1) if now.month+1 <= 12 else 1)))):
             rows.append(row)
     return rows
     # return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month=now.month) |
