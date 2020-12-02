@@ -20,7 +20,7 @@ def make_str_from_date(dt: date) -> str:
     return dt.strftime("%d.%m.%Y")
 
 
-def validate_birth_day(bd: str, action: str = None) -> [str, None]:
+def validate_birth_day(bd: str, action: str = None, return_date:bool = False) -> [str, None]:
     if not isinstance(bd, str) or not bd:
         return bd
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
@@ -31,7 +31,7 @@ def validate_birth_day(bd: str, action: str = None) -> [str, None]:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            return d.strftime("%d.%m.%Y")
+            return d.strftime("%d.%m.%Y") if not return_date else d
     else:
         raise ValidateError(exceptions_texts.bad_date())
 
@@ -69,7 +69,7 @@ def validate_names(first_name: str, last_name: str, action=None):
     return validate_name(first_name), validate_name(last_name)
 
 
-def validate(field_name: str, value: str):
+def validate(field_name: str, value: str, return_date=False):
     if not isinstance(value, str):
         value = ""
     if "phone" in field_name:
@@ -77,7 +77,7 @@ def validate(field_name: str, value: str):
     elif "name" in field_name:
         return validate_name(value)
     elif "birth" in field_name:
-        return validate_birth_day(value)
+        return validate_birth_day(value, return_date=return_date)
     else:
         raise ValidateError(exceptions_texts.bad_field_name())
 

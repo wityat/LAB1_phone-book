@@ -176,7 +176,7 @@ async def change__(message: types.Message, state: FSMContext):
         text = str(e)
     else:
         try:
-            val = validate(what, message.text)
+            val = validate(what, message.text, return_date=True)
             print(val, flush=True)
         except ValidateError as e:
             text = str(e)
@@ -192,7 +192,7 @@ async def change__(message: types.Message, state: FSMContext):
                 setattr(row, what, val)
                 await row.save(force_update=True)
             # text = texts.success_changed()
-            await state.update_data(make_data({what: val}))
+            await state.update_data({what: val})
             await actions.change(message, state, row=row)
     if text:
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
