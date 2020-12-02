@@ -15,7 +15,7 @@ async def delete(message: types.Message, state: FSMContext):
 
 
 async def sure_delete(message: types.Message, state: FSMContext):
-    data = get_kwargs_from_state(state)
+    data = await get_kwargs_from_state(state)
     row = await PhoneBookRow(**data)
     try:
         row.validate_names()
@@ -35,7 +35,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
 
 
 async def find(message: types.Message, state: FSMContext):
-    data = get_kwargs_from_state(state)
+    data = await get_kwargs_from_state(state)
     try:
         rows = await find_in_db(**data)
     except Exception as e:
@@ -46,7 +46,7 @@ async def find(message: types.Message, state: FSMContext):
 
 
 async def add(message: types.Message, state: FSMContext):
-    data = get_kwargs_from_state(state)
+    data = await get_kwargs_from_state(state)
     row = await PhoneBookRow(**data)
     try:
         row, is_created = await row.get_or_create()
@@ -61,7 +61,7 @@ async def add(message: types.Message, state: FSMContext):
 
 
 async def change(message: types.Message, state: FSMContext):
-    data = get_kwargs_from_state(state)
+    data = await get_kwargs_from_state(state)
     row = await PhoneBookRow(**data)
     try:
         row = await row.get_()
@@ -75,7 +75,7 @@ async def change(message: types.Message, state: FSMContext):
 
 
 async def age(message: types.Message, state: FSMContext):
-    data = get_kwargs_from_state(state)
+    data = await get_kwargs_from_state(state)
     row = await PhoneBookRow(**data)
 
     try:

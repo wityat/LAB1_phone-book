@@ -15,7 +15,7 @@ def get_kwargs_from_args(args: list):
     return {fields[i]: arg for i, arg in enumerate(args)}
 
 
-def get_kwargs_from_state(state: FSMContext):
+async def get_kwargs_from_state(state: FSMContext):
     data = await state.get_data()
     kwargs = {}
     for st in GetDataHard.all_states_names:

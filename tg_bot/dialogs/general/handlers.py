@@ -94,7 +94,7 @@ async def change__(message: types.Message, state: FSMContext):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]
         st_data[what] = message.text
-    row = await PhoneBookRow(**get_kwargs_from_state(state))
+    row = await PhoneBookRow(**await get_kwargs_from_state(state))
     try:
         await row.save()
     except Exception as e:
@@ -132,7 +132,7 @@ async def change__(message: types.Message, state: FSMContext):
 #     st_str = await state.get_state()
 #     await state.update_data({st_str: what})
 #     if st_str == States.hard_find_bd.state:
-#         rows = await find_in_db(**get_kwargs_from_state(state))
+#         rows = await find_in_db(**await get_kwargs_from_state(state))
 #         text = rows_to_str(rows)
 #         kb = keyboards.back_to_menu()
 #     else:
