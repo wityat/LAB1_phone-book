@@ -1,6 +1,8 @@
+from typing import Optional, Iterable
+
 from tortoise.exceptions import DoesNotExist, OperationalError
 from tortoise.models import Model
-from tortoise import fields
+from tortoise import fields, BaseDBAsyncClient
 from hashlib import sha256
 import re
 
@@ -61,7 +63,13 @@ class PhoneBookRow(Model):
         except OperationalError:
             raise ValidateError(exceptions_texts.does_not_exist())
 
-    async def save(self):
+    async def save(
+        self,
+        using_db: Optional[BaseDBAsyncClient] = None,
+        update_fields: Optional[Iterable[str]] = None,
+        force_create: bool = False,
+        force_update: bool = False,
+    ) -> None:
         self.validate()
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
         await super().save()
