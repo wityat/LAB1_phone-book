@@ -102,7 +102,7 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, bot_user:
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
     args = [arg.replace("%", "") for arg in args]
-    await data_to_action(message, args=args)
+    await data_to_action(message, state=state, args=args)
 
 
 @dp.callback_query_handler(Button("delete:", True), state="*")

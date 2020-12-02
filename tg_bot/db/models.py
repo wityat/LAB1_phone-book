@@ -29,6 +29,7 @@ class PhoneBookRow(Model):
     hash_name = fields.CharField(max_length=64, pk=True)
 
     def validate_dt(self):
+        print(self.birth_day, self.birth_day_, flush=True)
         result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", self.birth_day_)
         if result:
             day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
@@ -88,7 +89,6 @@ class PhoneBookRow(Model):
         force_update: bool = False,
     ) -> None:
         self.validate()
-        print(self.birth_day, self.birth_day_, flush=True)
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
         await super().save()
 
