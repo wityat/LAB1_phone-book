@@ -1,4 +1,8 @@
-from ..load_all import _
+
+def _(s):
+    from ..load_all import _
+    return _(s)
+
 
 template = lambda: _("❌ ОШИБКА!\n\n")
 
