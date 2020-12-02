@@ -48,6 +48,7 @@ async def find(message: types.Message, state: FSMContext):
 async def add(message: types.Message, state: FSMContext):
     data = await get_kwargs_from_state(state)
     row = await PhoneBookRow(**data)
+    print(data, row.first_name, row.last_name, row.phone, row.birth_day, flush=True)
     try:
         row, is_created = await row.get_or_create()
     except Exception as e:
