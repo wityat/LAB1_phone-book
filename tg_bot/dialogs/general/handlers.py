@@ -183,20 +183,21 @@ async def change__(message: types.Message, state: FSMContext):
         text = str(e)
     else:
         try:
-            if "name" in what:
-                row_ = row
-                await row.delete()
-                setattr(row_, what, validate(what, message.text))
-                row_._custom_generated_pk = True
-                await row_.save(force_create=True)
-            else:
-                setattr(row, what, validate(what, message.text))
-                await row.save(force_update=True)
+            val = validate(what, message.text)
         except ValidateError as e:
             text = str(e)
         else:
+            if "name" in what:
+                row_ = row
+                await row.delete()
+                setattr(row_, what, val)
+                row_._custom_generated_pk = True
+                await row_.save(force_create=True)
+            else:
+                setattr(row, what, val)
+                await row.save(force_update=True)
             # text = texts.success_changed()
-            await state.update_data({what: validate(what, message.text)})
+            await state.update_data({what: val})
             await actions.change(message, state, row=row)
     if text:
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
