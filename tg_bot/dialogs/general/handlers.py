@@ -192,7 +192,7 @@ async def change__(message: types.Message, state: FSMContext):
                 setattr(row, what, val)
                 await row.save(force_update=True)
             # text = texts.success_changed()
-            await state.update_data({what: val})
+            await state.update_data({what: val if not "birth" in what else make_str_from_date(val)})
             await actions.change(message, state, row=row)
     if text:
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
