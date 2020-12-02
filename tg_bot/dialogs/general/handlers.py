@@ -35,7 +35,7 @@ async def menu_(callback: types.CallbackQuery, bot_user: BotUser):
 
 @dp.callback_query_handler(Button("all"), state="*")
 async def all_(callback: types.CallbackQuery, bot_user: BotUser):
-    all_rows = rows_to_str(await PhoneBookRow.all())
+    all_rows = await rows_to_str(await PhoneBookRow.all())
     await edit_or_send_message(bot, callback, text=all_rows, kb=keyboards.menu())
     await callback.answer()
 
@@ -133,7 +133,7 @@ async def change__(message: types.Message, state: FSMContext):
 #     await state.update_data({st_str: what})
 #     if st_str == States.hard_find_bd.state:
 #         rows = await find_in_db(**await get_kwargs_from_state(state))
-#         text = rows_to_str(rows)
+#         text = await rows_to_str(rows)
 #         kb = keyboards.back_to_menu()
 #     else:
 #         await States.next()

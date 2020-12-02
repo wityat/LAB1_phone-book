@@ -28,7 +28,7 @@ async def get_kwargs_from_state(state: FSMContext):
     return kwargs
 
 
-def rows_to_str(rows):
+async def rows_to_str(rows):
     return "\n\n".join([str(row) async for row in rows])
 
 
