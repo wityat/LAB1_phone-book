@@ -89,7 +89,7 @@ async def change_(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
 
-@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day, Change.phone])
+@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day_, Change.phone])
 async def change__(message: types.Message, state: FSMContext):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]

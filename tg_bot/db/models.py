@@ -21,6 +21,7 @@ class BotUser(Model):
 
 
 class PhoneBookRow(Model):
+    birth_day_ = ""
     first_name = fields.CharField(max_length=255, default="")
     last_name = fields.CharField(max_length=255, default="")
     phone = fields.CharField(max_length=11, default="")
@@ -28,7 +29,7 @@ class PhoneBookRow(Model):
     hash_name = fields.CharField(max_length=64, pk=True)
 
     def validate_dt(self):
-        result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", self.birth_day)
+        result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", self.birth_day_)
         if result:
             day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
             try:
@@ -71,9 +72,9 @@ class PhoneBookRow(Model):
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
 
-    async def delete_(self):
+    async def delete_(self, **kwargs):
         try:
-            await self.delete()
+            await self.delete(**kwargs)
         except OperationalError:
             raise ValidateError(exceptions_texts.does_not_exist())
 

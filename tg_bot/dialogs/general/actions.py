@@ -50,7 +50,7 @@ async def add(message: types.Message, state: FSMContext):
     # print(data, row.first_name, row.last_name, row.phone, row.birth_day, flush=True)
     try:
         row_, is_created = await PhoneBookRow.get_or_create(**data)
-    except Exception as e:
+    except ValidateError as e:
         text = str(e)
     else:
         if is_created:
