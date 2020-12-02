@@ -25,3 +25,5 @@ change = lambda st: _("Отправьте мне новое <b>") + f"{state_to_
 success_changed = lambda:  _("Успешно изменено!")
 
 age = lambda age: _("Возраст человека из этой записи - ") + f"{age}"
+
+nothing_find = lambda: _("Ничего не найдено!")

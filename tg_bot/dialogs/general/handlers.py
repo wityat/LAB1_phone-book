@@ -59,16 +59,50 @@ async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: B
     await callback.answer()
 
 
+@dp.callback_query_handler(Button("get_data_hard", True),
+                           custom_state=[GetDataHard.first_name, GetDataHard.last_name,
+                                         GetDataHard.birth_day_, GetDataHard.phone],
+                           state="*")
+async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
+    get_data_hard_way = callback.data.split(":")[-1]
+    if get_data_hard_way == "skip":
+        await get_data_hard_msg(callback.message, state, skip=True)
+    elif get_data_hard_way == "show_find":
+        rows = await find_in_db(**await get_kwargs_from_state(state))
+        text = rows_to_str(rows)
+        await edit_or_send_message(bot, callback, text=text, kb=keyboards.get_data_hard__choice(rows))
+    elif get_data_hard_way == "nothing":
+        await callback.answer(texts.nothing_find())
+    elif get_data_hard_way:
+        try:
+            row_id = int(get_data_hard_way)
+        except ValueError:
+            pass
+        else:
+            row = await PhoneBookRow.get(id=row_id)
+            await data_to_action(callback.message, row=row)
+    await callback.answer()
+
+
+@dp.message_handler(custom_state=[GetDataHard.first_name, GetDataHard.last_name,
+                                  GetDataHard.birth_day_, GetDataHard.phone],
+                    state="*")
+async def get_data_hard_msg(message: types.Message, state: FSMContext, bot_user: BotUser, skip=None):
+    async with state.proxy() as st_data:
+        what = (await state.get_state()).split(":")[-1]
+        st_data[what] = message.text if not skip else None
+    if what not in GetDataHard.birth_day_.state:
+        await GetDataHard.next()
+        await edit_or_send_message(bot, message, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
+    else:
+        await data_to_action(message, state=state)
+
+
 @dp.message_handler(state=GetDataEasy.me)
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
     args = [arg.replace("%", None) for arg in args]
-    data = get_kwargs_from_args(args)
-    await state.update_data(data)
-    await state.reset_state(with_data=False)
-    async with state.proxy() as st_data:
-        await (getattr(actions, st_data["action"]))(message, state)
-        st_data["action"] = None
+    await data_to_action(message, args=args)
 
 
 @dp.callback_query_handler(Button("delete:", True), state="*")
@@ -89,7 +123,7 @@ async def change_(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
 
-@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day_, Change.phone])
+@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day_, Change.phone], state="*")
 async def change__(message: types.Message, state: FSMContext):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]

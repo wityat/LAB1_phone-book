@@ -10,7 +10,10 @@ from tg_bot.modules.filters import Button
 from ...modules.help_functions import *
 
 
-async def delete(message: types.Message, state: FSMContext):
+async def delete(message: types.Message, state: FSMContext, row=None):
+    if row:
+        await state.update_data(get_kwargs_from_args([row.first_name, row.last_name,
+                                                      row.phone, row.birth_day]))
     await edit_or_send_message(bot, message, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
 
 
@@ -34,38 +37,33 @@ async def sure_delete(message: types.Message, state: FSMContext):
     await edit_or_send_message(bot, message, text=text, kb=kb)
 
 
-async def find(message: types.Message, state: FSMContext):
-    data = await get_kwargs_from_state(state)
-    try:
-        rows = await find_in_db(**data)
-    except Exception as e:
-        text = str(e)
-    else:
-        text = await rows_to_str(rows)
-    await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
-
-
-async def add(message: types.Message, state: FSMContext):
-    data = await get_kwargs_from_state(state)
-    print(data, flush=True)
-    try:
-        row_, is_created = await PhoneBookRow.get_or_create(**data)
-    except ValidateError as e:
-        text = str(e)
-    else:
-        if is_created:
-            text = texts.success_added()
+async def find(message: types.Message, state: FSMContext, row=None):
+    if not row:
+        data = await get_kwargs_from_state(state)
+        try:
+            rows = await find_in_db(**data)
+        except Exception as e:
+            text = str(e)
         else:
-            text = texts.already_exist()
+            text = await rows_to_str(rows)
+    else:
+        text = await rows_to_str([row])
     await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
 
 
-async def change(message: types.Message, state: FSMContext):
-    data = await get_kwargs_from_state(state)
-    try:
-        row = await PhoneBookRow.get_(**data)
-    except Exception as e:
-        text = str(e)
+async def add(message: types.Message, state: FSMContext, row=None):
+    if not row:
+        data = await get_kwargs_from_state(state)
+        print(data, flush=True)
+        try:
+            row_, is_created = await PhoneBookRow.get_or_create(**data)
+        except ValidateError as e:
+            text = str(e)
+        else:
+            if is_created:
+                text = texts.success_added()
+            else:
+                text = texts.already_exist()
         kb = keyboards.back_to_menu()
     else:
         text = await rows_to_str([row])
@@ -73,13 +71,33 @@ async def change(message: types.Message, state: FSMContext):
     await edit_or_send_message(bot, message, text=text, kb=kb)
 
 
-async def age(message: types.Message, state: FSMContext):
+async def change(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
+    if not row:
+        try:
+            row = await PhoneBookRow.get_(**data)
+        except Exception as e:
+            text = str(e)
+            kb = keyboards.back_to_menu()
+        else:
+            text = await rows_to_str([row])
+            kb = keyboards.change_row()
+    else:
+        text = await rows_to_str([row])
+        kb = keyboards.change_row()
+    await edit_or_send_message(bot, message, text=text, kb=kb)
 
-    try:
-        row = await PhoneBookRow.get_(**data)
-    except Exception as e:
-        text = str(e)
+
+async def age(message: types.Message, state: FSMContext, row=None):
+    data = await get_kwargs_from_state(state)
+    if not row:
+        try:
+            row = await PhoneBookRow.get_(**data)
+        except Exception as e:
+            text = str(e)
+        else:
+            age_ = calculate_age(row.birth_day)
+            text = texts.age(age_)
     else:
         age_ = calculate_age(row.birth_day)
         text = texts.age(age_)

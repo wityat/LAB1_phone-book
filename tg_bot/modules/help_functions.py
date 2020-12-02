@@ -1,9 +1,12 @@
 import re
 from datetime import date
+from itertools import islice
 
+from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from tg_bot.db.models import PhoneBookRow
+from tg_bot.dialogs.general import actions
 from tg_bot.modules.states import GetDataHard
 
 
@@ -36,8 +39,17 @@ async def get_kwargs_from_state(state: FSMContext):
     return kwargs
 
 
+async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
+    data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
+    await state.update_data(data)
+    await state.reset_state(with_data=False)
+    async with state.proxy() as st_data:
+        await (getattr(actions, st_data["action"]))(message, state, row)
+        st_data["action"] = None
+
+
 async def rows_to_str(rows):
-    return "Записи:\n\n" + "\n\n".join([str(row) for row in rows])
+    return "Записи:\n\n" + "\n\n".join([f"{i+1}. "+str(row) for i, row in enumerate(rows)])
 
 
 def state_to_readable_word(st: str, add_info=False):
@@ -56,3 +68,7 @@ def calculate_age(born):
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 
+def chunks(data, size=10000):
+    it = iter(data)
+    for i in range(0, len(data), size):
+        yield {k: data[k] for k in islice(it, size)}
