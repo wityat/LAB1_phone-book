@@ -19,7 +19,7 @@ services:
 
   tgbot:
     container_name: tgbot
-    image: docker.pkg.github.com/pip-install-hse/destreambot/tg_bot:latest
+    image: docker.pkg.github.com/wityat/lab1_phone-book/bot_tgbot_labs:latest
     working_dir: "/code"
     depends_on:
       - db
