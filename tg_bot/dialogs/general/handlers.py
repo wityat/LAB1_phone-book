@@ -40,7 +40,7 @@ async def all_(callback: types.CallbackQuery, bot_user: BotUser):
     await callback.answer()
 
 
-@dp.callback_query_handler(Button("find") | Button("add") | Button("del") | Button("change"), state="*")
+@dp.callback_query_handler(Button("find") | Button("add") | Button("del") | Button("change") | Button("age"), state="*")
 async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     await state.update_data({"action": callback.data})
     await edit_or_send_message(bot, callback, text=texts.get_data(), kb=keyboards.get_data())
