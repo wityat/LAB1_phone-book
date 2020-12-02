@@ -55,7 +55,7 @@ class PhoneBookRow(Model):
         import string
         fn = any(x for x in string.punctuation if x in self.first_name)
         ln = any(x for x in string.punctuation if x in self.last_name)
-        if not fn or not ln:
+        if fn or ln:
             raise ValidateError(exceptions_texts.punctuation_names())
         self.first_name.title()
         self.last_name.title()
