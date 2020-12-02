@@ -5,7 +5,7 @@ menu = lambda: KeyboardInline([{_("Все"): "all"},
                                {_("Поиск"): "find"},
                                {_("Добавить"): "add"},
                                {_("Удалить"): "delete"},
-                               {_("Изменить "): "change"},
+                               {_("Изменить"): "change"},
                                {_("Возраст"): "age"},
                                ]).get()
 
@@ -17,4 +17,9 @@ get_data_hard = lambda: KeyboardInline([{_("Показать уже найден
                                         {_("Пропустить"): "get_data:skip"}]).get()
 
 get_data_hard__nothing = lambda: KeyboardInline([{_("Ничего не найдено"): "get_data:nothing"},
-                                             {_("Пропустить"): "get_data:skip"}]).get()
+                                                 {_("Пропустить"): "get_data:skip"}]).get()
+
+choice_yes_no = lambda call: KeyboardInline([{_("Да"): f"{call}:1", _("Нет"): f"{call}:0"}]).get()
+
+change_row = lambda: KeyboardInline([{"Изменить имя": "change:first_name", "Изменить фамилию": "change:last_name"},
+                                     {"Изменить номер телефона": "change:phone", "Изменить дату рождения": "change:birth_day"}]).get()

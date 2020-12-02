@@ -1,4 +1,5 @@
 from ...load_all import _
+from ...modules.help_functions import state_to_readable_word
 
 menu = lambda: _("Меню:")
 
@@ -9,20 +10,18 @@ maintenance = lambda: _("В разработке!")
 
 get_data_easy = lambda: _("Отправьте через пробел поля, по которым хотите произвести поиск, например:\nВиктор Шатилов 79300085393 13.07.2001\n\nЧтобы пропустить какое-то поле, введите пробел два раза, пример:\nШатилов  79300085393")
 
-
-def state_to_readable_word(st: str):
-    if "first_name" == st:
-        return "имя"
-    elif "last_name" == st:
-        return "фамилия"
-    elif "phone" == st:
-        return "номер телефона"
-    elif "birth_day" == st:
-        return "день рождения"
-
-
 get_data_hard = lambda st: _("Отправьте мне <b>") + f"{state_to_readable_word(st)}" + _("</b> или нажмите кнопку <i>Пропустить</i>")
 
 success_deleted = lambda: _("Успешно удалено!")
 
 sure_delete = lambda: _("Действительно хочешь удалить?")
+
+success_added = lambda:  _("Успешно добавлено!")
+
+already_exist = lambda:  _("Такая запись уже существует!")
+
+change = lambda st: _("Отправьте мне новое <b>") + f"{state_to_readable_word(st, True)}" + _("</b>")
+
+success_changed = lambda:  _("Успешно изменено!")
+
+age = lambda age: _("Возраст человека из этой записи - ") + f"{age}"

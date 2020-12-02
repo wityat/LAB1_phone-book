@@ -64,7 +64,7 @@ class PhoneBookRow(Model):
     async def save(self):
         self.validate()
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
-        super().save()
+        await super().save()
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}\n{self.phone}\n{self.birth_day if self.birth_day else ''}"
