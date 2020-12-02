@@ -1,3 +1,4 @@
+from tortoise.exceptions import DoesNotExist, OperationalError
 from tortoise.models import Model
 from tortoise import fields
 from hashlib import sha256
@@ -19,9 +20,9 @@ class BotUser(Model):
 class PhoneBookRow(Model):
     first_name = fields.CharField(max_length=255, default="")
     last_name = fields.CharField(max_length=255, default="")
-    hash_name = fields.CharField(max_length=64, pk=True)
     phone = fields.CharField(max_length=11, default="")
     birth_day = fields.DateField(null=True)
+    hash_name = fields.CharField(max_length=64, pk=True)
 
     def validate_phone(self):
         if self.phone.startswith("+7"):
@@ -34,9 +35,11 @@ class PhoneBookRow(Model):
             raise ValidateError(exceptions_texts.len_phone())
 
     def validate_names(self):
+        if not self.first_name or not self.last_name:
+            raise ValidateError(exceptions_texts.no_fn_or_ln())
         import string
         fn = any(x for x in string.punctuation if x in self.first_name)
-        ln = any(x for x in string.punctuation if x in self.first_name)
+        ln = any(x for x in string.punctuation if x in self.last_name)
         if not fn or not ln:
             raise ValidateError(exceptions_texts.punctuation_names())
         self.first_name.title()
@@ -46,7 +49,19 @@ class PhoneBookRow(Model):
         self.validate_phone()
         self.validate_names()
 
-    def save(self):
+    async def get_(self):
+        try:
+            await self.get()
+        except DoesNotExist:
+            raise ValidateError(exceptions_texts.does_not_exist())
+
+    async def delete_(self):
+        try:
+            await self.delete()
+        except OperationalError:
+            raise ValidateError(exceptions_texts.does_not_exist())
+
+    async def save(self):
         self.validate()
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
         super().save()
