@@ -69,7 +69,7 @@ class PhoneBookRow(Model):
     @classmethod
     async def get_(cls, **kwargs):
         try:
-            await cls.get(**kwargs)
+            return await cls.get(**kwargs)
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
 

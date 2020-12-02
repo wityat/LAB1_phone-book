@@ -24,7 +24,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
         kb = keyboards.back_to_menu()
     else:
         try:
-            await row.get_(**data)
+            await row.delete_(**data)
         except ValidateError as e:
             text = str(e)
             kb = keyboards.back_to_menu()
