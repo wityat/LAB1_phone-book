@@ -24,7 +24,7 @@ async def get_kwargs_from_state(state: FSMContext):
         except KeyError:
             continue
         else:
-            kwargs.update({st: val})
+            kwargs.update({st.split(":")[-1]: val})
     return kwargs
 
 
