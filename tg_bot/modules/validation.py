@@ -21,12 +21,6 @@ def make_str_from_date(dt: date) -> str:
 
 
 def validate_birth_day(bd: str, action: str = None) -> [str, None]:
-    if not isinstance(bd, str) and isinstance(bd, date):
-        bd_ = make_str_from_date(bd)
-        if "-" in bd_:
-            return bd
-        else:
-            bd = bd_
     if not isinstance(bd, str) or not bd:
         return bd
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
@@ -37,7 +31,7 @@ def validate_birth_day(bd: str, action: str = None) -> [str, None]:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            return d.strftime("%d.%m.%Y")
+            return d
     else:
         raise ValidateError(exceptions_texts.bad_date())
 

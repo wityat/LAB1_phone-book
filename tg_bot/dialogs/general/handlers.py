@@ -184,6 +184,7 @@ async def change__(message: types.Message, state: FSMContext):
     else:
         try:
             val = validate(what, message.text)
+            print(val, flush=True)
         except ValidateError as e:
             text = str(e)
         else:
