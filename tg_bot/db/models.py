@@ -66,15 +66,17 @@ class PhoneBookRow(Model):
         self.validate_names()
         self.validate_dt()
 
-    async def get_(self, **kwargs):
+    @classmethod
+    async def get_(cls, **kwargs):
         try:
-            await self.get(**kwargs)
+            await cls.get(**kwargs)
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
 
-    async def delete_(self, **kwargs):
+    @classmethod
+    async def delete_(cls, **kwargs):
         try:
-            await self.delete(**kwargs)
+            await cls.delete(**kwargs)
         except OperationalError:
             raise ValidateError(exceptions_texts.does_not_exist())
 
