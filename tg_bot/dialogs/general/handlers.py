@@ -101,7 +101,7 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, bot_user:
 @dp.message_handler(state=GetDataEasy.me)
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
-    args = [arg.replace("%", None) for arg in args]
+    args = [arg.replace("%", "") for arg in args]
     await data_to_action(message, args=args)
 
 
