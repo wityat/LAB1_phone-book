@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional, Iterable
 
 from tortoise.exceptions import DoesNotExist, OperationalError
@@ -26,6 +27,17 @@ class PhoneBookRow(Model):
     birth_day = fields.DateField(null=True)
     hash_name = fields.CharField(max_length=64, pk=True)
 
+    def validate_dt(self):
+        result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", self.birth_day)
+        if result:
+            day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
+            try:
+                d = date(day=day, month=month, year=year)
+            except Exception as e:
+                raise ValidateError(exceptions_texts.bad_date())
+            else:
+                self.birth_day = d
+
     def validate_phone(self):
         if self.phone.startswith("+7"):
             self.phone.replace("+7", "8")
@@ -51,10 +63,11 @@ class PhoneBookRow(Model):
     def validate(self):
         self.validate_phone()
         self.validate_names()
+        self.validate_dt()
 
-    async def get_(self):
+    async def get_(self, **kwargs):
         try:
-            await self.get()
+            await self.get(**kwargs)
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
 
