@@ -18,18 +18,20 @@ from ...modules.help_functions import *
 from ...modules.states import *
 
 
-async def menu(message: types.Message):
+async def menu(message: types.Message, state: FSMContext):
+    data = await get_kwargs_from_state(state)
+    await state.update_data({k: None for k, v in data.items()})
     await edit_or_send_message(bot, message, text=texts.menu(), kb=keyboards.menu())
 
 
 @dp.message_handler(CommandStart(), state="*")
 async def start(message: types.Message, state: FSMContext, bot_user: BotUser):
-    await menu(message)
+    await menu(message, state)
 
 
 @dp.callback_query_handler(Button("menu"), state="*")
-async def menu_(callback: types.CallbackQuery, bot_user: BotUser):
-    await menu(callback.message)
+async def menu_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
+    await menu(callback.message, state)
     await callback.answer()
 
 
@@ -77,7 +79,7 @@ async def delete_(callback: types.CallbackQuery, state: FSMContext):
     if sure_del:
         await sure_delete(callback.message, state)
     else:
-        await menu(callback.message)
+        await menu(callback.message, state)
     await callback.answer()
 
 
