@@ -49,7 +49,7 @@ async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user:
 
 @dp.callback_query_handler(Button("get_data:", True), state="*")
 async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
-    get_data_way = callback.data.slpit(":")[-1]
+    get_data_way = callback.data.split(":")[-1]
     if get_data_way == "easy":
         await edit_or_send_message(bot, callback, text=texts.get_data_easy())
         await GetDataEasy.me.set()
