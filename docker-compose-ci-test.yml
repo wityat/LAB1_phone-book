@@ -34,27 +34,3 @@ services:
       - .:/code/tg_bot
     command: python start_tg_bot.py
     restart: always
-
-  celery:
-    container_name: celery
-    build: .
-    working_dir: "/code/tg_bot"
-    command: celery -A adminka worker -l info
-    env_file:
-      - "./test.env"
-    volumes:
-      - .:/code/tg_bot
-    depends_on:
-      - redis
-
-  celery-beat:
-    container_name: celery-beat
-    build: .
-    working_dir: "/code/tg_bot"
-    command: sh -c "rm -rf celerybeat.pid && celery -A adminka beat -l info"
-    env_file:
-      - "./test.env"
-    volumes:
-      - .:/code/tg_bot
-    depends_on:
-      - redis

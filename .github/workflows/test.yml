@@ -1,7 +1,7 @@
 on:
   push:
     branches: 
-      - test
+      - main
 
 jobs:
   build:
@@ -14,20 +14,16 @@ jobs:
       - name: Add environment variables to test.env!
         run: |
           echo DATABASE=postgres >> test.env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB_TEST }} >> test.env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER_TEST }} >> test.env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_TEST }} >> test.env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> test.env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> test.env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> test.env
           echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> test.env
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> test.env
+
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> test.env
-          echo SERVER_HOST=${{ secrets.SERVER_HOST_TEST }} >> test.env
-          echo RABBIT_USER=${{ secrets.RABBIT_USER }} >> test.env
-          echo RABBIT_PASSWORD=${{ secrets.RABBIT_PASSWORD }} >> test.env
-          echo RABBIT_HOST=${{ secrets.RABBIT_HOST }} >> test.env
-          echo RABBIT_PORT=${{ secrets.RABBIT_PORT }} >> test.env
-          echo RABBIT_VIRTUAL_HOST=${{ secrets.RABBIT_VIRTUAL_HOST }} >> test.env
-          echo RABBIT_QUEUE=${{ secrets.RABBIT_QUEUE }} >> test.env
-          echo TG_TOKEN=${{ secrets.TG_TOKEN_TEST }} >> test.env
+          echo SERVER_HOST=${{ secrets.SERVER_HOST }} >> test.env
+
+          echo TG_TOKEN=${{ secrets.TG_TOKEN }} >> test.env
           echo BOT_IMG=${{ secrets.BOT_IMG }} >> test.env
 
       - name: Log in to GitHub Packages
@@ -52,20 +48,16 @@ jobs:
       - name: Add environment variables to test.env!
         run: |
           echo DATABASE=postgres >> test.env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB_TEST }} >> test.env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER_TEST }} >> test.env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_TEST }} >> test.env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> test.env
+          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> test.env
+          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> test.env
           echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> test.env
           echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> test.env
+
           echo REDIS_HOST=${{ secrets.REDIS_HOST }} >> test.env
-          echo SERVER_HOST=${{ secrets.SERVER_HOST_TEST }} >> test.env
-          echo RABBIT_USER=${{ secrets.RABBIT_USER }} >> test.env
-          echo RABBIT_PASSWORD=${{ secrets.RABBIT_PASSWORD }} >> test.env
-          echo RABBIT_HOST=${{ secrets.RABBIT_HOST }} >> test.env
-          echo RABBIT_PORT=${{ secrets.RABBIT_PORT }} >> test.env
-          echo RABBIT_VIRTUAL_HOST=${{ secrets.RABBIT_VIRTUAL_HOST }} >> test.env
-          echo RABBIT_QUEUE=${{ secrets.RABBIT_QUEUE }} >> test.env
-          echo TG_TOKEN=${{ secrets.TG_TOKEN_TEST }} >> test.env
+          echo SERVER_HOST=${{ secrets.SERVER_HOST }} >> test.env
+
+          echo TG_TOKEN=${{ secrets.TG_TOKEN }} >> test.env
           echo BOT_IMG=${{ secrets.BOT_IMG }} >> test.env
       - name: "deploy"
         run: |
@@ -75,13 +67,13 @@ jobs:
           eval $(ssh-agent)
           ssh-add "$HOME/.ssh/id_rsa"
           echo "Add known hossts"
-          sudo printf '%s %s\n' "${{ secrets.SERVER_USER_TEST }}@${{ secrets.SERVER_HOST_TEST }}" "${{ secrets.SSH_PUBLIC_KEY_TEST }}" > sudo /etc/ssh/ssh_known_hosts
-          scp  -i "$HOME/.ssh/id_rsa" -o StrictHostKeyChecking=no -r ./test.env ./docker-compose-test.yml ${{ secrets.SERVER_USER_TEST }}@${{ secrets.SERVER_HOST_TEST }}:/home/${{ secrets.SERVER_USER_TEST }}/bot/
+          sudo printf '%s %s\n' "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" "${{ secrets.SSH_PUBLIC_KEY_TEST }}" > sudo /etc/ssh/ssh_known_hosts
+          scp  -i "$HOME/.ssh/id_rsa" -o StrictHostKeyChecking=no -r ./test.env ./docker-compose-test.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/bot/
           ssh -q -t -i "$HOME/.ssh/id_rsa" \
               -o UserKnownHostsFile=/dev/null \
-              -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_TEST }}@${{ secrets.SERVER_HOST_TEST }} << 'ENDSSH'
-          cd /home/${{ secrets.SERVER_USER_TEST }}/bot/
-          echo ${{ secrets.SERVER_PASS_TEST }} | sudo -S docker login docker.pkg.github.com -u wityat -p ${{ secrets.GITHUB_TOKEN }}
+              -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'ENDSSH'
+          cd /home/${{ secrets.SERVER_USER }}/bot/
+          echo ${{ secrets.SERVER_PASS }} | sudo -S docker login docker.pkg.github.com -u wityat -p ${{ secrets.GITHUB_TOKEN }}
           sudo docker pull ${{ secrets.BOT_IMG }}
           sudo docker-compose -f docker-compose-test.yml up -d
           sudo docker rmi $(sudo docker images -f dangling=true -q)|| true
