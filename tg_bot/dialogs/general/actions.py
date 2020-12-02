@@ -47,7 +47,7 @@ async def find(message: types.Message, state: FSMContext):
 
 async def add(message: types.Message, state: FSMContext):
     data = await get_kwargs_from_state(state)
-    # print(data, row.first_name, row.last_name, row.phone, row.birth_day, flush=True)
+    print(data, flush=True)
     try:
         row_, is_created = await PhoneBookRow.get_or_create(**data)
     except ValidateError as e:

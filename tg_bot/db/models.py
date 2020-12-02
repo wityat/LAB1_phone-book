@@ -86,6 +86,7 @@ class PhoneBookRow(Model):
         force_update: bool = False,
     ) -> None:
         self.validate()
+        print(self.birth_day, self.birth_day_, flush=True)
         self.hash_name = sha256((self.first_name+self.last_name).encode('utf-8')).hexdigest()
         await super().save()
 
