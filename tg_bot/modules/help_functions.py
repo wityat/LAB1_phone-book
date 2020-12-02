@@ -12,7 +12,7 @@ async def find_in_db(**kwargs):
 
 def get_kwargs_from_args(args: list):
     fields = GetDataHard.all_states_names
-    return {fields[i]: arg for i, arg in enumerate(args)}
+    return {fields[i].split(":")[-1]: arg for i, arg in enumerate(args)}
 
 
 async def get_kwargs_from_state(state: FSMContext):
