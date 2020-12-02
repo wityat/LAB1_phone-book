@@ -36,7 +36,7 @@ async def menu_(callback: types.CallbackQuery, bot_user: BotUser):
 @dp.callback_query_handler(Button("all"), state="*")
 async def all_(callback: types.CallbackQuery, bot_user: BotUser):
     all_rows = await rows_to_str(await PhoneBookRow.all())
-    await edit_or_send_message(bot, callback, text=all_rows, kb=keyboards.menu())
+    await edit_or_send_message(bot, callback, text=all_rows, kb=keyboards.back_to_menu())
     await callback.answer()
 
 

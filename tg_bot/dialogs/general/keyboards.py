@@ -2,10 +2,8 @@ from ...load_all import _
 from ...modules.keyboard import KeyboardInline, KeyboardReply
 
 menu = lambda: KeyboardInline([{_("Все"): "all"},
-                               {_("Поиск"): "find"},
-                               {_("Добавить"): "add"},
-                               {_("Удалить"): "delete"},
-                               {_("Изменить"): "change"},
+                               {_("Поиск"): "find", _("Добавить"): "add"},
+                               {_("Изменить"): "change", _("Удалить"): "delete"},
                                {_("Возраст"): "age"},
                                ]).get()
 
