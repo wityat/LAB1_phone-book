@@ -31,7 +31,7 @@ def validate_birth_day(bd: str, action: str = None) -> [str, None]:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            return d
+            return d.strftime("%d.%m.%Y")
     else:
         raise ValidateError(exceptions_texts.bad_date())
 

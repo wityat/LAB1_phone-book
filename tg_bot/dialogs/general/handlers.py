@@ -1,11 +1,4 @@
-from aiogram import types
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import StatesGroup, State
-
 from aiogram.dispatcher.filters import CommandStart
-from aiogram.utils.deep_linking import get_start_link
-from tortoise.exceptions import DoesNotExist
-
 from .actions import sure_delete
 from ...db.exceptions import ValidateError
 from ...db.models import BotUser, PhoneBookRow
@@ -16,7 +9,7 @@ from ...modules.filters import Button
 from ...modules.edit_or_send_message import edit_or_send_message
 from ...modules.help_functions import *
 from ...modules.states import *
-from ...modules.validation import validate
+from ...modules.validation import validate, make_data
 
 
 async def menu(message: types.Message, state: FSMContext):
@@ -199,7 +192,7 @@ async def change__(message: types.Message, state: FSMContext):
                 setattr(row, what, val)
                 await row.save(force_update=True)
             # text = texts.success_changed()
-            await state.update_data({what: val})
+            await state.update_data(make_data({what: val}))
             await actions.change(message, state, row=row)
     if text:
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
