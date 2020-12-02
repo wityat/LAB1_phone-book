@@ -29,7 +29,7 @@ async def get_kwargs_from_state(state: FSMContext):
 
 
 async def rows_to_str(rows):
-    return "\n\n".join([str(row) async for row in rows])
+    return "\n\n".join([str(row) for row in rows])
 
 
 def state_to_readable_word(st: str, add_info=False):
