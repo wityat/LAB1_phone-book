@@ -97,6 +97,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     if not row:
         text, kb = await find_with_choice(message, state)
     else:
+        await state.update_data(**get_kwargs_from_row(row))
         text, kb = await rows_to_str([row]), keyboards.change_row()
     await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
