@@ -171,7 +171,7 @@ async def change__(message: types.Message, state: FSMContext):
     what = (await state.get_state()).split(":")[-1]
     text = ""
     try:
-        row = await PhoneBookRow.get_(**await get_kwargs_from_state(state))
+        row = await PhoneBookRow.get_(**make_data(await get_kwargs_from_state(state)))
     except Exception as e:
         text = str(e)
     else:
