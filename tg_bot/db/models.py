@@ -29,6 +29,7 @@ class PhoneBookRow(Model):
     def validate_phone(self):
         if self.phone.startswith("+7"):
             self.phone.replace("+7", "8")
+        print(self.phone, flush=True)
         try:
             self.phone = re.match(r"[\d]+", self.phone).group()
         except AttributeError:
