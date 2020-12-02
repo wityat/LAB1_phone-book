@@ -27,7 +27,7 @@ def validate_birth_day(bd: str, action: str = None) -> [str, None]:
             return bd
         else:
             bd = bd_
-    if not isinstance(bd, str) and not bd:
+    if not isinstance(bd, str) or not bd:
         return bd
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
     if result:
