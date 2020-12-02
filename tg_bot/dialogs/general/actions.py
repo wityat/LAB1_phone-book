@@ -68,7 +68,7 @@ async def change(message: types.Message, state: FSMContext):
         text = str(e)
         kb = keyboards.back_to_menu()
     else:
-        text = await rows_to_str(row)
+        text = await rows_to_str([row])
         kb = keyboards.change_row()
     await edit_or_send_message(bot, message, text=text, kb=kb)
 
