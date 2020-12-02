@@ -193,6 +193,7 @@ async def change__(message: types.Message, state: FSMContext):
                 setattr(row_, what, val)
                 row_._custom_generated_pk = True
                 await row_.save(force_create=True)
+                row = row_
             else:
                 setattr(row, what, val)
                 await row.save(force_update=True)
