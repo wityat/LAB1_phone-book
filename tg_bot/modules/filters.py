@@ -29,8 +29,8 @@ class Button(BoundFilter):
 class CustomStateFilter(BoundFilter):
     key = 'custom_state'
 
-    def __init__(self, dispatcher, state: State):
-        self.state = state
+    def __init__(self, dispatcher, custom_state: State):
+        self.state = custom_state
         self.dispatcher = dispatcher
 
     async def check(self, message: types.Message) -> typing.Optional[typing.Dict[str, typing.Any]]:
