@@ -196,6 +196,7 @@ async def change__(message: types.Message, state: FSMContext):
             text = str(e)
         else:
             # text = texts.success_changed()
+            await state.update_data({what: validate(what, message.text)})
             await actions.change(message, state, row=row)
     if text:
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
