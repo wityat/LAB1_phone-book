@@ -48,6 +48,8 @@ def validate_names(first_name: str, last_name: str):
 
 
 def validate(field_name: str, value: str):
+    if not isinstance(value, str):
+        value = ""
     if "phone" in field_name:
         return validate_phone(value)
     elif "name" in field_name:
@@ -58,7 +60,7 @@ def validate(field_name: str, value: str):
         raise ValidateError(exceptions_texts.bad_field_name())
 
 
-def validate_all(first_name=None, last_name=None, phone=None, birth_day=None):
+def validate_all(first_name="", last_name="", phone="", birth_day=""):
     first_name, last_name = validate_names(first_name, last_name)
     phone = validate_phone(phone)
     birth_day = validate_birth_day(birth_day)
