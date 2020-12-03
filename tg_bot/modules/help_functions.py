@@ -17,13 +17,13 @@ async def find_in_db(**kwargs):
 def get_kwargs_from_args(args: list):
     fields = GetDataHard.all_states_names
     while len(fields) > len(args):
-        args.append("")
+        args.append(None)
     return {fields[i].split(":")[-1]: arg for i, arg in enumerate(args)}
 
 
 def get_empty_data():
     fields = GetDataHard.all_states_names
-    return {i.split(":")[-1]: "" for i in fields}
+    return {i.split(":")[-1]: None for i in fields}
 
 
 async def get_kwargs_from_state(state: FSMContext):
