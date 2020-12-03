@@ -6,7 +6,7 @@ from tg_bot.db import exceptions_texts
 from tg_bot.db.exceptions import ValidateError
 
 
-def validate_birth_day(bd: str) -> date:
+def validate_birth_day(bd: str) -> str:
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
     if result:
         day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
@@ -15,7 +15,7 @@ def validate_birth_day(bd: str) -> date:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            return d
+            return d.strftime("%Y-%m-%d")
     else:
         raise ValidateError(exceptions_texts.bad_date())
 

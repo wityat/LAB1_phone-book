@@ -10,7 +10,6 @@ from tg_bot.modules.states import GetDataHard
 from tg_bot.modules.validation import validate_all
 
 
-
 async def find_in_db(**kwargs):
     return await PhoneBookRow.filter(**kwargs)
 
