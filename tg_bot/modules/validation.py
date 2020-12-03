@@ -25,8 +25,10 @@ def validate_birth_day(bd: str) -> [str, None]:
 def validate_phone(phone: str):
     if not phone:
         raise ValidateError(exceptions_texts.no_phone())
-    if phone.startswith("+7") or phone.startswith("7"):
+    if phone.startswith("+7"):
         phone = phone.replace("+7", "8")
+    if phone.startswith("7"):
+        phone = "8"+phone[1:]
     try:
         phone = re.match(r"[\d]+", phone).group()
     except AttributeError:
