@@ -18,7 +18,7 @@ def make_date_from_str(dt: str) -> date:
 
 def validate_birth_day(bd: str) -> [str, None]:
     if not isinstance(bd, str):
-        return None
+        return bd
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
     if result:
         day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
