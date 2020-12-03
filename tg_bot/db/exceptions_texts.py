@@ -23,3 +23,5 @@ bad_field_name = lambda: template() + _("Неправильный filed_name, о
 no_phone = lambda: template() + _("Не указан телефон, укажите, пожалуйста!")
 
 fn_and_ln_not_unique = lambda: template() + _("Поля имя и фамилия не уникальны!")
+
+no_bd = lambda: template() + _("У этой записи нет даты рождения!")

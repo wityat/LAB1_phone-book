@@ -38,6 +38,14 @@ class PhoneBookRow(Model):
             raise ValidateError(exceptions_texts.no_fn_or_ln() + "\n\n" + exceptions_texts.no_phone())
 
     @classmethod
+    async def get_with_check_bd(cls, **kwargs):
+        row = await cls.get_(**kwargs)
+        if row.birth_day:
+            return row
+        else:
+            raise ValidateError(exceptions_texts.no_bd())
+
+    @classmethod
     async def create_(cls, **kwargs):
         try:
             return await (super().create(**kwargs))

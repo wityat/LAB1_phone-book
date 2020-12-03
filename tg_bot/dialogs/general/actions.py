@@ -23,7 +23,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
     data = make_data(await get_kwargs_from_state(state))
     print(data, flush=True)
     try:
-        row = await PhoneBookRow.get(**data)
+        row = await PhoneBookRow.get_(**data)
     except ValidateError as e:
         text = str(e)
         kb = keyboards.back_to_menu()
@@ -80,7 +80,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     if not row:
         try:
             row = await PhoneBookRow.get_(**make_data(data))
-        except Exception as e:
+        except ValidateError as e:
             text = str(e)
             kb = keyboards.back_to_menu()
         else:
@@ -96,8 +96,8 @@ async def age(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get_(**make_data(data))
-        except Exception as e:
+            row = await PhoneBookRow.get_with_check_bd(**make_data(data))
+        except ValidateError as e:
             text = str(e)
         else:
             age_ = calculate_age(row.birth_day)
