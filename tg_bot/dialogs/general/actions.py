@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from tortoise.exceptions import DoesNotExist
 
 from tg_bot.db.exceptions import ValidateError
 from tg_bot.db.models import PhoneBookRow
@@ -57,9 +58,13 @@ async def add(message: types.Message, state: FSMContext, row=None):
         print(data, flush=True)
         try:
             await PhoneBookRow.get(**data)
-        except ValidateError as e:
-            await PhoneBookRow.create(**data)
-            text = texts.success_added()
+        except DoesNotExist:
+            try:
+                await PhoneBookRow.create_(**data)
+            except ValidateError as e:
+                text = str(e)
+            else:
+                text = texts.success_added()
         else:
             text = texts.already_exist()
         kb = keyboards.back_to_menu()
@@ -73,7 +78,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get(**make_data(data))
+            row = await PhoneBookRow.get_(**make_data(data))
         except Exception as e:
             text = str(e)
             kb = keyboards.back_to_menu()
@@ -90,7 +95,7 @@ async def age(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get(**make_data(data))
+            row = await PhoneBookRow.get_(**make_data(data))
         except Exception as e:
             text = str(e)
         else:

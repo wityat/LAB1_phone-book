@@ -29,7 +29,7 @@ class PhoneBookRow(Model):
     hash_name = fields.CharField(max_length=64, pk=True)
 
     @classmethod
-    async def get(cls, **kwargs):
+    async def get_(cls, **kwargs):
         try:
             return await (super().get(**kwargs))
         except DoesNotExist:
@@ -38,7 +38,7 @@ class PhoneBookRow(Model):
             raise ValidateError(exceptions_texts.no_fn_or_ln() + "\n\n" + exceptions_texts.no_phone())
 
     @classmethod
-    async def create(cls, **kwargs):
+    async def create_(cls, **kwargs):
         try:
             return await (super().create(**kwargs))
         except DoesNotExist:
