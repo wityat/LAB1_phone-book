@@ -16,7 +16,7 @@ async def delete(message: types.Message, state: FSMContext, row=None):
     await state.update_data(get_kwargs_from_args([row.first_name, row.last_name,
                                                   row.phone, row.birth_day])
                             if row else
-                            get_kwargs_from_state(state))
+                            await get_kwargs_from_state(state))
     await edit_or_send_message(bot, message, state, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
 
 
