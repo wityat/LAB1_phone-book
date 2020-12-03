@@ -29,16 +29,18 @@ class PhoneBookRow(Model):
     hash_name = fields.CharField(max_length=64, pk=True)
 
     @classmethod
-    async def get_(cls, **kwargs):
+    async def get(cls, **kwargs):
         try:
-            return await cls.get(**kwargs)
+            return await super().get(**kwargs)
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
+        except ValueError:
+            raise ValidateError(exceptions_texts.no_fn_or_ln + "\n\n" + exceptions_texts.no_phone)
 
     @classmethod
-    async def delete_(cls, **kwargs):
+    async def delete(cls, **kwargs):
         try:
-            await cls.delete(**kwargs)
+            await super().delete(**kwargs)
         except OperationalError:
             raise ValidateError(exceptions_texts.does_not_exist())
 

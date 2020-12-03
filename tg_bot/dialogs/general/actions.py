@@ -27,7 +27,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
         kb = keyboards.back_to_menu()
     else:
         try:
-            await row.delete_(**data)
+            await row.delete(**data)
         except ValidateError as e:
             text = str(e)
             kb = keyboards.back_to_menu()
@@ -75,7 +75,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get_(**data)
+            row = await PhoneBookRow.get(**data)
         except Exception as e:
             text = str(e)
             kb = keyboards.back_to_menu()
@@ -92,7 +92,7 @@ async def age(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get_(**data)
+            row = await PhoneBookRow.get(**data)
         except Exception as e:
             text = str(e)
         else:
