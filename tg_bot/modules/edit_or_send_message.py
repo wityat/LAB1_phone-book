@@ -1,4 +1,5 @@
-from aiogram import types
+from aiogram import types, Bot
+from aiogram.dispatcher import FSMContext
 from aiogram.utils.exceptions import MessageNotModified, TelegramAPIError
 
 
@@ -10,15 +11,19 @@ async def delete_message_with_protect(bot, chat_id, msg_id):
         return False
 
 
-async def edit_or_send_message(bot, message_or_call, parse_mode='HTML', kb=None, text=None, video=None, photo=None, anim=None, chat_id=None, disable_web=False):
+async def edit_or_send_message(bot: Bot, message_or_call: [types.Message, types.CallbackQuery],
+                               state: FSMContext = None, message_id=None, parse_mode='HTML',
+                               kb=None, text=None, video=None, photo=None, anim=None, chat_id=None, disable_web=False):
+    was_msg = True if isinstance(message_or_call, types.Message) else False
     message = message_or_call if isinstance(message_or_call, types.Message) else message_or_call.message
     msg = None
+    message_id = (await state.get_data()).get("edit_msg_id") if state and not message_id else message_id
     if photo or anim or video:
         try:
             msg = await bot.edit_message_caption(
                 chat_id=message.chat.id if not chat_id else chat_id,
-                message_id=message.message_id,
-                text=text,
+                message_id=message.message_id if not message_id else message_id,
+                caption=text,
                 parse_mode=parse_mode,
                 reply_markup=kb,
             )
@@ -54,7 +59,7 @@ async def edit_or_send_message(bot, message_or_call, parse_mode='HTML', kb=None,
         try:
             msg = await bot.edit_message_text(
                 chat_id=message.chat.id if not chat_id else chat_id,
-                message_id=message.message_id,
+                message_id=message.message_id if not message_id else message_id,
                 text=text,
                 parse_mode=parse_mode,
                 reply_markup=kb,
@@ -72,4 +77,8 @@ async def edit_or_send_message(bot, message_or_call, parse_mode='HTML', kb=None,
                     reply_markup=kb,
                     disable_web_page_preview=disable_web
                 )
+    if was_msg:
+        await message.delete()
+    if isinstance(types.Message, msg):
+        await state.update_data({"edit_msg_id": msg.message_id})
     return msg

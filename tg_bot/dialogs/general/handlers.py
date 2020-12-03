@@ -34,16 +34,16 @@ async def menu_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotU
 
 
 @dp.callback_query_handler(Button("all"), state="*")
-async def all_(callback: types.CallbackQuery, bot_user: BotUser):
+async def all_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     all_rows = await rows_to_str(await PhoneBookRow.all())
-    await edit_or_send_message(bot, callback, text=all_rows, kb=keyboards.back_to_menu())
+    await edit_or_send_message(bot, callback, state, text=all_rows, kb=keyboards.back_to_menu())
     await callback.answer()
 
 
 @dp.callback_query_handler(Button("find") | Button("add") | Button("del") | Button("change") | Button("age"), state="*")
 async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     await state.update_data({"action": callback.data})
-    await edit_or_send_message(bot, callback, text=texts.get_data(), kb=keyboards.get_data())
+    await edit_or_send_message(bot, callback, state, text=texts.get_data(), kb=keyboards.get_data())
     await callback.answer()
 
 
@@ -51,11 +51,11 @@ async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user:
 async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     get_data_way = callback.data.split(":")[-1]
     if get_data_way == "easy":
-        await edit_or_send_message(bot, callback, text=texts.get_data_easy())
+        await edit_or_send_message(bot, callback, state, text=texts.get_data_easy())
         await GetDataEasy.me.set()
     elif get_data_way == "hard":
         await GetDataHard.first_name.set()
-        await edit_or_send_message(bot, callback, text=texts.get_data_hard(await state.get_state()), kb=keyboards.get_data_hard())
+        await edit_or_send_message(bot, callback, state, text=texts.get_data_hard(await state.get_state()), kb=keyboards.get_data_hard())
     await callback.answer()
 
 
@@ -70,7 +70,7 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
     elif get_data_hard_way == "show_find":
         rows = await find_in_db(**await get_kwargs_from_state(state))
         text = rows_to_str(rows)
-        await edit_or_send_message(bot, callback, text=text, kb=keyboards.get_data_hard__choice(rows))
+        await edit_or_send_message(bot, callback, state, text=text, kb=keyboards.get_data_hard__choice(rows))
     elif get_data_hard_way == "nothing":
         await callback.answer(texts.nothing_find())
     elif get_data_hard_way:
@@ -119,7 +119,7 @@ async def delete_(callback: types.CallbackQuery, state: FSMContext):
 async def change_(callback: types.CallbackQuery, state: FSMContext):
     what = callback.data.split(":")[-1]
     await (getattr(Change, what)).set()
-    await edit_or_send_message(bot, callback, text=texts.change(what))
+    await edit_or_send_message(bot, callback, state, text=texts.change(what))
     await callback.answer()
 
 
@@ -143,7 +143,7 @@ async def change__(message: types.Message, state: FSMContext):
 #
 # @dp.callback_query_handler(Button("find"), state="*")
 # async def find_(callback: types.CallbackQuery, bot_user: BotUser):
-#     await edit_or_send_message(bot, callback, text=texts.find(), kb=keyboards.find())
+#     await edit_or_send_message(bot, callback, state, text=texts.find(), kb=keyboards.find())
 #     await callback.answer()
 #
 #
@@ -151,12 +151,12 @@ async def change__(message: types.Message, state: FSMContext):
 # async def find_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
 #     find_num = int(callback.data.slpit(":")[-1])
 #     if find_num == Find.easy:
-#         await edit_or_send_message(bot, callback, text=texts.easy_find())
+#         await edit_or_send_message(bot, callback, state, text=texts.easy_find())
 #         await States.easy_find.set()
 #     elif find_num == Find.hard:
 #         await States.hard_find_fn.set()
-#         await edit_or_send_message(bot, callback, text=texts.hard_find_(await state.get_state()), kb=keyboards.hard_find())
-#     await edit_or_send_message(bot, callback, text=texts.find(), kb=keyboards.find())
+#         await edit_or_send_message(bot, callback, state, text=texts.hard_find_(await state.get_state()), kb=keyboards.hard_find())
+#     await edit_or_send_message(bot, callback, state, text=texts.find(), kb=keyboards.find())
 #     await callback.answer()
 #
 #
