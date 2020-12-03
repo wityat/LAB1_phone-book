@@ -6,7 +6,9 @@ from tg_bot.db import exceptions_texts
 from tg_bot.db.exceptions import ValidateError
 
 
-def validate_birth_day(bd: str) -> str:
+def validate_birth_day(bd: str) -> [str, None]:
+    if not isinstance(bd, str):
+        return None
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
     if result:
         day, month, year = map(int, result[0].split("/" if "/" in result[0] else "."))
@@ -23,7 +25,7 @@ def validate_birth_day(bd: str) -> str:
 def validate_phone(phone: str):
     if not phone:
         raise ValidateError(exceptions_texts.no_phone())
-    if phone.startswith("+7"):
+    if phone.startswith("+7") or phone.startswith("7"):
         phone.replace("+7", "8")
     try:
         phone = re.match(r"[\d]+", phone).group()
