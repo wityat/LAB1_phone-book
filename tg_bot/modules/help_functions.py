@@ -45,11 +45,11 @@ async def data_to_action(message: types.Message, state: FSMContext = None, args:
         if args or state:
             data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
             data = validate_all(**data, action=st_data["action"])
-            await state.update_data(data)
+            st_data.update(data)
             print("DATA_TO_ACTION DATA: ", data, flush=True)
-            await state.reset_state(with_data=False)
         await (getattr(actions, st_data["action"]))(message, state, row)
         st_data["action"] = None
+    await state.reset_state(with_data=False)
 
 
 async def rows_to_str(rows):
