@@ -17,7 +17,7 @@ def validate_birth_day(bd: str) -> [str, None]:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            return d.strftime("%Y-%m-%d")
+            return d.strftime("%d.%m.%Y")
     else:
         raise ValidateError(exceptions_texts.bad_date())
 

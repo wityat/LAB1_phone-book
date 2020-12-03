@@ -60,11 +60,12 @@ class PhoneBookRow(Model):
             force_create: bool = False,
             force_update: bool = False,
     ) -> None:
-        print(self.first_name, self.last_name, self.phone, self.birth_day, flush=True)
+        print(self.first_name, self.last_name, self.phone, self.birth_day, type(self.birth_day), flush=True)
         self.first_name, self.last_name, \
         self.phone, self.birth_day = validate_all(self.first_name, self.last_name,
                                                   self.phone, self.birth_day).values()
-        self.birth_day = datetime.strptime(self.birth_day, "%Y-%m-%d").date() if self.birth_day else None
+        self.birth_day = datetime.strptime(self.birth_day, "%d.%m.%Y").date() if self.birth_day else None
+        print(self.first_name, self.last_name, self.phone, self.birth_day, type(self.birth_day), flush=True)
         self.hash_name = sha256((self.first_name + self.last_name).encode('utf-8')).hexdigest()
         await (super().save())
 
