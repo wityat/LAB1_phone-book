@@ -16,6 +16,7 @@ from ...modules.filters import Button
 from ...modules.edit_or_send_message import edit_or_send_message
 from ...modules.help_functions import *
 from ...modules.states import *
+from ...modules.validation import validate
 
 
 async def menu(message: types.Message, state: FSMContext):
@@ -63,7 +64,7 @@ async def get_data(callback: types.CallbackQuery, state: FSMContext, bot_user: B
 
 @dp.callback_query_handler(Button("get_data_hard", True),
                            custom_state=[GetDataHard.first_name, GetDataHard.last_name,
-                                         GetDataHard.birth_day_, GetDataHard.phone],
+                                         GetDataHard.birth_day, GetDataHard.phone],
                            state="*")
 async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     get_data_hard_way = callback.data.split(":")[-1]
@@ -87,13 +88,21 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
 
 
 @dp.message_handler(custom_state=[GetDataHard.first_name, GetDataHard.last_name,
-                                  GetDataHard.birth_day_, GetDataHard.phone],
+                                  GetDataHard.birth_day, GetDataHard.phone],
                     state="*")
 async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]
+        try:
+            field_val = validate(what, message.text)
+        except ValidateError as e:
+            await edit_or_send_message(bot, message, state, text=str(e) + "\n" + texts.try_input_again(),
+                                       kb=keyboards.get_data_hard())
+        else:
+            st_data[what] = field_val
         st_data[what] = message.text if not skip else None
-    if what not in GetDataHard.birth_day_.state:
+
+    if what not in GetDataHard.birth_day.state:
         what = await GetDataHard.next()
         await edit_or_send_message(bot, message, state, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
     else:
@@ -125,7 +134,7 @@ async def change_(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
 
-@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day_, Change.phone], state="*")
+@dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day, Change.phone], state="*")
 async def change__(message: types.Message, state: FSMContext):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]

@@ -27,3 +27,5 @@ success_changed = lambda:  _("Успешно изменено!")
 age = lambda age: _("Возраст человека из этой записи - ") + f"{age}"
 
 nothing_find = lambda: _("Ничего не найдено!")
+
+try_input_again = lambda: _("Попробуйте ввести снова!")
