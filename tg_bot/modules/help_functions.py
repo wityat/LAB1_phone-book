@@ -42,6 +42,7 @@ async def get_kwargs_from_state(state: FSMContext):
 async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
     if args or state:
         data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
+        print(data, flush=True)
         await state.update_data(data)
         await state.reset_state(with_data=False)
     async with state.proxy() as st_data:
