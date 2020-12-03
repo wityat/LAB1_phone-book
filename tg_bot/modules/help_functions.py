@@ -5,9 +5,13 @@ from itertools import islice
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from tg_bot.db.exceptions import ValidateError
 from tg_bot.db.models import PhoneBookRow
-from tg_bot.dialogs.general import actions
+from tg_bot.dialogs.general import actions, keyboards
+from tg_bot.load_all import bot
+from tg_bot.modules.edit_or_send_message import edit_or_send_message
 from tg_bot.modules.states import GetDataHard
+from tg_bot.modules.validation import validate_all
 
 
 async def find_in_db(**kwargs):
@@ -42,7 +46,10 @@ async def get_kwargs_from_state(state: FSMContext):
 async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
     if args or state:
         data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
-        print(data, flush=True)
+        try:
+            data = validate_all(**data)
+        except ValidateError as e:
+            await edit_or_send_message(bot, message, state, text=str(e), kb=keyboards.back_to_menu())
         await state.update_data(data)
         await state.reset_state(with_data=False)
     async with state.proxy() as st_data:
