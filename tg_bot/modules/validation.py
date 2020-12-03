@@ -7,7 +7,7 @@ from tg_bot.db.exceptions import ValidateError
 
 
 def make_data(data: dict):
-    if bd := data["birth_day"]:
+    if bd := data.get("birth_day"):
         data["birth_day"] = make_date_from_str(bd)
     return data
 
