@@ -88,7 +88,7 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
 @dp.message_handler(custom_state=[GetDataHard.first_name, GetDataHard.last_name,
                                   GetDataHard.birth_day_, GetDataHard.phone],
                     state="*")
-async def get_data_hard_msg(message: types.Message, state: FSMContext, bot_user: BotUser, skip=None):
+async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]
         st_data[what] = message.text if not skip else None
