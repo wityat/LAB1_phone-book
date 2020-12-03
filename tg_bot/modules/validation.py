@@ -17,8 +17,7 @@ def validate_birth_day(bd: str) -> [str, None]:
         except Exception as e:
             raise ValidateError(exceptions_texts.bad_date())
         else:
-            # return d.strftime("%Y-%m-%d")
-            return d
+            return d.strftime("%Y-%m-%d")
     else:
         raise ValidateError(exceptions_texts.bad_date())
 
@@ -27,7 +26,7 @@ def validate_phone(phone: str):
     if not phone:
         raise ValidateError(exceptions_texts.no_phone())
     if phone.startswith("+7") or phone.startswith("7"):
-        phone.replace("+7", "8")
+        phone = phone.replace("+7", "8")
     try:
         phone = re.match(r"[\d]+", phone).group()
     except AttributeError:

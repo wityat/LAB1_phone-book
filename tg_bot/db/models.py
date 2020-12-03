@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from typing import Optional, Iterable
 
 from tortoise.exceptions import DoesNotExist, OperationalError
@@ -63,6 +63,7 @@ class PhoneBookRow(Model):
         self.first_name, self.last_name, \
         self.phone, self.birth_day = validate_all(self.first_name, self.last_name,
                                                   self.phone, self.birth_day).values()
+        self.birth_day = datetime.strptime(self.birth_day, "%Y-%m-%d").date()
         self.hash_name = sha256((self.first_name + self.last_name).encode('utf-8')).hexdigest()
         await (super().save())
 
