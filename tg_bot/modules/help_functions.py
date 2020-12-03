@@ -31,7 +31,7 @@ async def get_kwargs_from_state(state: FSMContext):
     kwargs = {}
     for st in GetDataHard.all_states_names:
         try:
-            val = data[st]
+            val = data[st.split(":")[-1]]
         except KeyError:
             continue
         else:
