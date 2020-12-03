@@ -93,7 +93,7 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None
         what = (await state.get_state()).split(":")[-1]
         st_data[what] = message.text if not skip else None
     if what not in GetDataHard.birth_day_.state:
-        await GetDataHard.next()
+        what = await GetDataHard.next()
         await edit_or_send_message(bot, message, state, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
     else:
         await data_to_action(message, state=state)
