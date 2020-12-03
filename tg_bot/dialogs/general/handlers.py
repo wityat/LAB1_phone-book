@@ -41,7 +41,8 @@ async def all_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUs
     await callback.answer()
 
 
-@dp.callback_query_handler(Button("find") | Button("add") | Button("delete") | Button("change") | Button("age"), state="*")
+@dp.callback_query_handler(Button("find") | Button("add") | Button("delete") | Button("change") | Button("age"),
+                           state="*")
 async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     await state.update_data({"action": callback.data})
     await edit_or_send_message(bot, callback, state, text=texts.get_data(), kb=keyboards.get_data())
@@ -119,6 +120,7 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
     args = [arg.replace("%", "") for arg in args]
+    print("ARGS: ", args, flush=True)
     try:
         await data_to_action(message, state=state, args=args)
     except ValidateError as e:
@@ -149,11 +151,17 @@ async def change__(message: types.Message, state: FSMContext):
         what = (await state.get_state()).split(":")[-1]
         st_data[what] = message.text
     try:
-        row = await PhoneBookRow.get_or_create(**await get_kwargs_from_state(state))
+        row = await PhoneBookRow.get_(**await get_kwargs_from_state(state))
     except Exception as e:
         text = str(e)
     else:
-        text = texts.success_changed()
+        try:
+            setattr(row, what, message.text)
+            await row.save()
+        except ValidateError as e:
+            text = str(e)
+        else:
+            text = texts.success_changed()
     await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
 
 
