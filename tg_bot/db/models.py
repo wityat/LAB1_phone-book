@@ -66,7 +66,7 @@ class PhoneBookRow(Model):
                                                   self.phone, self.birth_day).values()
         print(self.first_name, self.last_name, self.phone, self.birth_day, type(self.birth_day), flush=True)
         self.hash_name = sha256((self.first_name + self.last_name).encode('utf-8')).hexdigest()
-        await (super().save())
+        await (super().save(using_db, update_fields, force_create, force_update))
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}\n{self.phone}\n{self.birth_day if self.birth_day else ''}"

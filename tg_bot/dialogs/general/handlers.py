@@ -148,9 +148,8 @@ async def change__(message: types.Message, state: FSMContext):
     async with state.proxy() as st_data:
         what = (await state.get_state()).split(":")[-1]
         st_data[what] = message.text
-    row = await PhoneBookRow(**await get_kwargs_from_state(state))
     try:
-        await row.save()
+        row = await PhoneBookRow.get_or_create(**await get_kwargs_from_state(state))
     except Exception as e:
         text = str(e)
     else:
