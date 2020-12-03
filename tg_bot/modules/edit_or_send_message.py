@@ -79,6 +79,6 @@ async def edit_or_send_message(bot: Bot, message_or_call: [types.Message, types.
                 )
     if was_msg:
         await message.delete()
-    if isinstance(types.Message, msg):
+    if isinstance(msg, types.Message):
         await state.update_data({"edit_msg_id": msg.message_id})
     return msg
