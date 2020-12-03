@@ -35,7 +35,7 @@ class PhoneBookRow(Model):
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
         except ValueError:
-            raise ValidateError(exceptions_texts.no_fn_or_ln + "\n\n" + exceptions_texts.no_phone)
+            raise ValidateError(exceptions_texts.no_fn_or_ln() + "\n\n" + exceptions_texts.no_phone())
 
     @classmethod
     async def create(cls, **kwargs):
@@ -44,7 +44,7 @@ class PhoneBookRow(Model):
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
         except ValueError:
-            raise ValidateError(exceptions_texts.no_fn_or_ln + "\n\n" + exceptions_texts.no_phone)
+            raise ValidateError(exceptions_texts.no_fn_or_ln() + "\n\n" + exceptions_texts.no_phone())
 
     @classmethod
     async def delete(cls, **kwargs):
