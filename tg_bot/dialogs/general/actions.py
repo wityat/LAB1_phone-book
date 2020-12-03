@@ -14,7 +14,7 @@ async def delete(message: types.Message, state: FSMContext, row=None):
     if row:
         await state.update_data(get_kwargs_from_args([row.first_name, row.last_name,
                                                       row.phone, row.birth_day]))
-    await edit_or_send_message(bot, message, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
+    await edit_or_send_message(bot, message, state, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
 
 
 async def sure_delete(message: types.Message, state: FSMContext):
@@ -34,7 +34,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
         else:
             text = texts.success_deleted()
             kb = keyboards.back_to_menu()
-    await edit_or_send_message(bot, message, text=text, kb=kb)
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def find(message: types.Message, state: FSMContext, row=None):
@@ -48,7 +48,7 @@ async def find(message: types.Message, state: FSMContext, row=None):
             text = await rows_to_str(rows)
     else:
         text = await rows_to_str([row])
-    await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
+    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
 
 
 async def add(message: types.Message, state: FSMContext, row=None):
@@ -68,7 +68,7 @@ async def add(message: types.Message, state: FSMContext, row=None):
     else:
         text = await rows_to_str([row])
         kb = keyboards.change_row()
-    await edit_or_send_message(bot, message, text=text, kb=kb)
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def change(message: types.Message, state: FSMContext, row=None):
@@ -85,7 +85,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     else:
         text = await rows_to_str([row])
         kb = keyboards.change_row()
-    await edit_or_send_message(bot, message, text=text, kb=kb)
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def age(message: types.Message, state: FSMContext, row=None):
@@ -101,4 +101,4 @@ async def age(message: types.Message, state: FSMContext, row=None):
     else:
         age_ = calculate_age(row.birth_day)
         text = texts.age(age_)
-    await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
+    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
