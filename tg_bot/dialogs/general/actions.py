@@ -56,14 +56,12 @@ async def add(message: types.Message, state: FSMContext, row=None):
         data = await get_kwargs_from_state(state)
         print(data, flush=True)
         try:
-            row_, is_created = await PhoneBookRow.get_or_create(**make_data(data))
+            row_ = await PhoneBookRow.get(**make_data(data))
         except ValidateError as e:
-            text = str(e)
+            await PhoneBookRow.create(**make_data(data))
+            text = texts.success_added()
         else:
-            if is_created:
-                text = texts.success_added()
-            else:
-                text = texts.already_exist()
+            text = texts.already_exist()
         kb = keyboards.back_to_menu()
     else:
         text = await rows_to_str([row])
