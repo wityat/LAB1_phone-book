@@ -83,7 +83,10 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
             pass
         else:
             row = await PhoneBookRow.get(id=row_id)
-            await data_to_action(callback.message, row=row)
+            try:
+                await data_to_action(callback.message, row=row)
+            except ValidateError as e:
+                await edit_or_send_message(bot, callback, state, text=str(e), kb=keyboards.back_to_menu())
     await callback.answer()
 
 
@@ -106,14 +109,20 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None
         what = await GetDataHard.next()
         await edit_or_send_message(bot, message, state, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
     else:
-        await data_to_action(message, state=state)
+        try:
+            await data_to_action(message, state=state)
+        except ValidateError as e:
+            await edit_or_send_message(bot, message, state, text=str(e), kb=keyboards.back_to_menu())
 
 
 @dp.message_handler(state=GetDataEasy.me)
 async def get_data_easy(message: types.Message, state: FSMContext, bot_user: BotUser):
     args = message.text.replace("  ", " % ").split()
     args = [arg.replace("%", "") for arg in args]
-    await data_to_action(message, state=state, args=args)
+    try:
+        await data_to_action(message, state=state, args=args)
+    except ValidateError as e:
+        await edit_or_send_message(bot, message, state, text=str(e), kb=keyboards.back_to_menu())
 
 
 @dp.callback_query_handler(Button("delete:", True), state="*")

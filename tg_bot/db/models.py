@@ -31,7 +31,7 @@ class PhoneBookRow(Model):
     @classmethod
     async def get(cls, **kwargs):
         try:
-            return await super().get(**kwargs)
+            return await (super().get(**kwargs))
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
         except ValueError:
@@ -40,7 +40,7 @@ class PhoneBookRow(Model):
     @classmethod
     async def create(cls, **kwargs):
         try:
-            return await super().create(**kwargs)
+            return await (super().create(**kwargs))
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
         except ValueError:
@@ -64,7 +64,7 @@ class PhoneBookRow(Model):
         self.phone, self.birth_day = validate_all(self.first_name, self.last_name,
                                                   self.phone, self.birth_day).values()
         self.hash_name = sha256((self.first_name + self.last_name).encode('utf-8')).hexdigest()
-        await super().save()
+        await (super().save())
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}\n{self.phone}\n{self.birth_day if self.birth_day else ''}"
