@@ -16,8 +16,8 @@ async def find_in_db(**kwargs):
 
 def get_kwargs_from_args(args: list):
     fields = GetDataHard.all_states_names
-    while len(fields) > len(args):
-        args.append(None)
+    # while len(fields) > len(args):
+    #     args.append(None)
     return {fields[i].split(":")[-1]: arg for i, arg in enumerate(args)}
 
 
@@ -35,7 +35,8 @@ async def get_kwargs_from_state(state: FSMContext):
         except KeyError:
             continue
         else:
-            kwargs.update({st.split(":")[-1]: val})
+            if val:
+                kwargs.update({st.split(":")[-1]: val})
     return kwargs
 
 
