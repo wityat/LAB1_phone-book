@@ -21,6 +21,7 @@ async def delete(message: types.Message, state: FSMContext, row=None):
 
 async def sure_delete(message: types.Message, state: FSMContext):
     data = make_data(await get_kwargs_from_state(state))
+    print(data, flush=True)
     try:
         row = await PhoneBookRow.get(**data)
     except ValidateError as e:
