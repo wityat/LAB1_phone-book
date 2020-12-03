@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, Iterable
 
-from tortoise.exceptions import DoesNotExist, OperationalError
+from tortoise.exceptions import DoesNotExist, OperationalError, IntegrityError
 from tortoise.models import Model
 from tortoise import fields, BaseDBAsyncClient
 from hashlib import sha256
@@ -66,8 +66,11 @@ class PhoneBookRow(Model):
                                                   self.phone, self.birth_day).values()
         print(self.first_name, self.last_name, self.phone, self.birth_day, type(self.birth_day), flush=True)
         self.hash_name = sha256((self.first_name + self.last_name).encode('utf-8')).hexdigest()
-        await (super().save(using_db, update_fields, force_create, force_update))
-
+        try:
+            await (super().save(using_db, update_fields, force_create, force_update))
+        except IntegrityError:
+            raise ValidateError(exceptions_texts.fn_and_ln_not_unique())
+        
     def __str__(self):
         return f"{self.first_name} {self.last_name}\n{self.phone}\n{self.birth_day if self.birth_day else ''}"
 
