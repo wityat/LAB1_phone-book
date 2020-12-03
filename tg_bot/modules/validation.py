@@ -17,7 +17,7 @@ def make_date_from_str(dt: str) -> date:
 
 
 def validate_birth_day(bd: str) -> [str, None]:
-    if not isinstance(bd, str):
+    if not isinstance(bd, str) or not bd:
         return bd
     result = re.findall(r"^[\s]*(\d\d[/.]\d\d[/.]\d\d\d\d)[\s]*$", bd)
     if result:
@@ -32,7 +32,9 @@ def validate_birth_day(bd: str) -> [str, None]:
         raise ValidateError(exceptions_texts.bad_date())
 
 
-def validate_phone(phone: str):
+def validate_phone(phone: str, action: str = None):
+    if action != "add" and not phone:
+        return phone
     if not phone:
         raise ValidateError(exceptions_texts.no_phone())
     if phone.startswith("+7"):
@@ -74,9 +76,9 @@ def validate(field_name: str, value: str):
         raise ValidateError(exceptions_texts.bad_field_name())
 
 
-def validate_all(first_name="", last_name="", phone="", birth_day=""):
+def validate_all(first_name="", last_name="", phone="", birth_day="", action=None):
     first_name, last_name = validate_names(first_name, last_name)
-    phone = validate_phone(phone)
+    phone = validate_phone(phone, action)
     birth_day = validate_birth_day(birth_day)
     return {"first_name": first_name, "last_name": last_name,
             "phone": phone, "birth_day": birth_day}
