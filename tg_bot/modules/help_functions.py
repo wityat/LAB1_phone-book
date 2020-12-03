@@ -1,15 +1,11 @@
-import re
 from datetime import date
 from itertools import islice
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from tg_bot.db.exceptions import ValidateError
 from tg_bot.db.models import PhoneBookRow
-from tg_bot.dialogs.general import actions, keyboards
-from tg_bot.load_all import bot
-from tg_bot.modules.edit_or_send_message import edit_or_send_message
+from tg_bot.dialogs.general import actions
 from tg_bot.modules.states import GetDataHard
 from tg_bot.modules.validation import validate_all
 
