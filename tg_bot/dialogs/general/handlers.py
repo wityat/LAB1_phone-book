@@ -78,11 +78,11 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
         await callback.answer(texts.nothing_find())
     elif get_data_hard_way:
         try:
-            row_id = int(get_data_hard_way)
+            row_hash_name = int(get_data_hard_way)
         except ValueError:
             pass
         else:
-            row = await PhoneBookRow.get(id=row_id)
+            row = await PhoneBookRow.get(hash_name__startswith=row_hash_name)
             try:
                 await data_to_action(callback.message, row=row)
             except ValidateError as e:

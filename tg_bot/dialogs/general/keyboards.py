@@ -19,7 +19,7 @@ get_data_hard__nothing = lambda: KeyboardInline([{_("Ничего не найд�
                                                  {_("Пропустить"): "get_data_hard:skip"}]).get()
 
 get_data_hard__choice = lambda rows: KeyboardInline(
-    [i for i in chunks({f"{j+1}": f"get_data_hard:{row.id}" for j, row in enumerate(rows)}, 3)] +
+    [i for i in chunks({f"{j+1}": f"get_data_hard:{row.hash_name[:20]}" for j, row in enumerate(rows)}, 3)] +
     [{_("Пропустить"): "get_data_hard:skip"}]).get()
 
 
