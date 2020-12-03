@@ -8,6 +8,7 @@ from tg_bot.load_all import bot
 from tg_bot.modules.edit_or_send_message import edit_or_send_message
 from tg_bot.modules.filters import Button
 from ...modules.help_functions import *
+from ...modules.validation import make_data, validate_names
 
 
 async def delete(message: types.Message, state: FSMContext, row=None):
@@ -18,10 +19,9 @@ async def delete(message: types.Message, state: FSMContext, row=None):
 
 
 async def sure_delete(message: types.Message, state: FSMContext):
-    data = await get_kwargs_from_state(state)
-    row = await PhoneBookRow(**data)
+    data = make_data(await get_kwargs_from_state(state))
     try:
-        row.validate_names()
+        row = await PhoneBookRow.get(**data)
     except ValidateError as e:
         text = str(e)
         kb = keyboards.back_to_menu()
@@ -41,7 +41,7 @@ async def find(message: types.Message, state: FSMContext, row=None):
     if not row:
         data = await get_kwargs_from_state(state)
         try:
-            rows = await find_in_db(**data)
+            rows = await find_in_db(**make_data(data))
         except Exception as e:
             text = str(e)
         else:
@@ -56,7 +56,7 @@ async def add(message: types.Message, state: FSMContext, row=None):
         data = await get_kwargs_from_state(state)
         print(data, flush=True)
         try:
-            row_, is_created = await PhoneBookRow.get_or_create(**data)
+            row_, is_created = await PhoneBookRow.get_or_create(**make_data(data))
         except ValidateError as e:
             text = str(e)
         else:
@@ -75,7 +75,7 @@ async def change(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get(**data)
+            row = await PhoneBookRow.get(**make_data(data))
         except Exception as e:
             text = str(e)
             kb = keyboards.back_to_menu()
@@ -92,7 +92,7 @@ async def age(message: types.Message, state: FSMContext, row=None):
     data = await get_kwargs_from_state(state)
     if not row:
         try:
-            row = await PhoneBookRow.get(**data)
+            row = await PhoneBookRow.get(**make_data(data))
         except Exception as e:
             text = str(e)
         else:

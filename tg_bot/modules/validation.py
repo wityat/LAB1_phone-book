@@ -1,9 +1,19 @@
 import re
 import string
-from datetime import date
+from datetime import date, datetime
 
 from tg_bot.db import exceptions_texts
 from tg_bot.db.exceptions import ValidateError
+
+
+def make_data(data: dict):
+    if bd := data["birth_day"]:
+        data["birth_day"] = make_date_from_str(bd)
+    return data
+
+
+def make_date_from_str(dt: str) -> date:
+    return datetime.strptime(dt, "%d.%m.%Y").date()
 
 
 def validate_birth_day(bd: str) -> [str, None]:
