@@ -28,7 +28,8 @@ async def edit_or_send_message(bot: Bot, message_or_call: [types.Message, types.
                 reply_markup=kb,
             )
         except Exception as e:
-            await delete_message_with_protect(bot, message.chat.id, message.message_id)
+            print(str(e), flush=True)
+            await delete_message_with_protect(bot, message.chat.id, message.message_id if not message_id else message_id)
             if type(e) == MessageNotModified:
                 pass
             elif anim:
@@ -66,10 +67,11 @@ async def edit_or_send_message(bot: Bot, message_or_call: [types.Message, types.
                 disable_web_page_preview=disable_web
             )
         except Exception as e:
+            print(str(e), flush=True)
             if type(e) == MessageNotModified:
                 pass
             else:
-                await delete_message_with_protect(bot, message.chat.id, message.message_id)
+                await delete_message_with_protect(bot, message.chat.id, message.message_id if not message_id else message_id)
                 msg = await bot.send_message(
                     chat_id=message.chat.id if not chat_id else chat_id,
                     text=text,
