@@ -19,7 +19,7 @@ from ...modules.states import *
 
 
 async def menu(message: types.Message, state: FSMContext):
-    await edit_or_send_message(bot, message, text=texts.menu(), kb=keyboards.menu())
+    await edit_or_send_message(bot, message, state, text=texts.menu(), kb=keyboards.menu())
 
 
 @dp.message_handler(CommandStart(), state="*")
@@ -94,7 +94,7 @@ async def get_data_hard_msg(message: types.Message, state: FSMContext, skip=None
         st_data[what] = message.text if not skip else None
     if what not in GetDataHard.birth_day_.state:
         await GetDataHard.next()
-        await edit_or_send_message(bot, message, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
+        await edit_or_send_message(bot, message, state, text=texts.get_data_hard(what), kb=keyboards.get_data_hard())
     else:
         await data_to_action(message, state=state)
 
@@ -136,7 +136,7 @@ async def change__(message: types.Message, state: FSMContext):
         text = str(e)
     else:
         text = texts.success_changed()
-    await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
+    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
 
 
 # ###################FIND##########################
@@ -174,7 +174,7 @@ async def change__(message: types.Message, state: FSMContext):
 #         await States.next()
 #         text = texts.hard_find_(await state.get_state())
 #         kb = keyboards.hard_find()
-#     await edit_or_send_message(bot, msg_or_call, text=text, kb=kb)
+#     await edit_or_send_message(bot, msg_or_call, state, text=text, kb=kb)
 #
 #
 # @dp.callback_query_handler(Button("hard_find:dont_know", True), state="*")
