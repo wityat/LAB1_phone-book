@@ -40,7 +40,7 @@ class PhoneBookRow(Model):
     @classmethod
     async def create(cls, **kwargs):
         try:
-            return await super().get(**kwargs)
+            return await super().create(**kwargs)
         except DoesNotExist:
             raise ValidateError(exceptions_texts.does_not_exist())
         except ValueError:
