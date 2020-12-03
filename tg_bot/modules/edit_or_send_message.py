@@ -77,7 +77,7 @@ async def edit_or_send_message(bot: Bot, message_or_call: [types.Message, types.
                     reply_markup=kb,
                     disable_web_page_preview=disable_web
                 )
-    if was_msg:
+    if was_msg and message.chat.id == message.from_user.id:
         await message.delete()
     if isinstance(msg, types.Message):
         await state.update_data({"edit_msg_id": msg.message_id})
