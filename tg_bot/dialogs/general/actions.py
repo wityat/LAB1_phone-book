@@ -53,12 +53,12 @@ async def find(message: types.Message, state: FSMContext, row=None):
 
 async def add(message: types.Message, state: FSMContext, row=None):
     if not row:
-        data = await get_kwargs_from_state(state)
+        data = make_data(await get_kwargs_from_state(state))
         print(data, flush=True)
         try:
-            row_ = await PhoneBookRow.get(**make_data(data))
+            await PhoneBookRow.get(**data)
         except ValidateError as e:
-            await PhoneBookRow.create(**make_data(data))
+            await PhoneBookRow.create(**data)
             text = texts.success_added()
         else:
             text = texts.already_exist()
