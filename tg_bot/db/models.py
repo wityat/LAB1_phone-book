@@ -54,13 +54,6 @@ class PhoneBookRow(Model):
         except ValueError:
             raise ValidateError(exceptions_texts.no_fn_or_ln() + "\n\n" + exceptions_texts.no_phone())
 
-    @classmethod
-    async def delete(cls, **kwargs):
-        try:
-            await super().delete(**kwargs)
-        except OperationalError:
-            raise ValidateError(exceptions_texts.does_not_exist())
-
     async def save(
             self,
             using_db: Optional[BaseDBAsyncClient] = None,
