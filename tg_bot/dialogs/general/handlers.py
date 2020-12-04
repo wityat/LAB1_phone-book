@@ -156,11 +156,11 @@ async def change__(message: types.Message, state: FSMContext):
             if "name" in what:
                 row_ = row
                 await row.delete()
-                setattr(row_, what, message.text)
+                setattr(row_, what, validate(what, message.text))
                 row_._custom_generated_pk = True
                 await row_.save(force_create=True)
             else:
-                setattr(row, what, message.text)
+                setattr(row, what, validate(what, message.text))
                 await row.save(force_update=True)
         except ValidateError as e:
             text = str(e)

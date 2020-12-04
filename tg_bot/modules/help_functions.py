@@ -65,7 +65,7 @@ def state_to_readable_word(st: str, add_info=False):
     elif "phone" in st:
         return "номер телефона"
     elif "birth_day" in st:
-        return "день рождения" + (" (в формате ГГГГ-ММ-ДД) " if add_info else "")
+        return "день рождения" + (" (в формате ДД.ММ.ГГГГ) " if add_info else "")
 
 
 def calculate_age(born):
