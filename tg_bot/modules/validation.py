@@ -41,6 +41,8 @@ def validate_phone(phone: str, action: str = None):
         phone = phone.replace("+7", "8")
     if phone.startswith("7"):
         phone = "8"+phone[1:]
+    if not phone.startswith("89"):
+        raise ValidateError(exceptions_texts.bad_phone())
     try:
         phone = re.match(r"[\d]+", phone).group()
     except AttributeError:
