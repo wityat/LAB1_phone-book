@@ -159,6 +159,7 @@ async def change__(message: types.Message, state: FSMContext):
                 row_ = row
                 await row.delete()
                 setattr(row_, what, message.text)
+                row_._custom_generated_pk = True
                 await row_.save(force_create=True)
             else:
                 await row.save(force_update=True)
