@@ -25,5 +25,6 @@ get_data_hard__choice = lambda rows: KeyboardInline(
 
 choice_yes_no = lambda call: KeyboardInline([{_("Да"): f"{call}:1", _("Нет"): f"{call}:0"}]).get()
 
-change_row = lambda: KeyboardInline([{"Изменить имя": "change:first_name", "Изменить фамилию": "change:last_name"},
-                                     {"Изменить номер телефона": "change:phone", "Изменить дату рождения": "change:birth_day"}]).get()
+change_row = lambda: KeyboardInline([{_("Изменить имя"): "change:first_name", _("Изменить фамилию"): "change:last_name"},
+                                     {_("Изменить номер телефона"): "change:phone", _("Изменить дату рождения"): "change:birth_day"},
+                                     {_("Меню"): "menu"}]).get()

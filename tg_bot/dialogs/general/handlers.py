@@ -73,7 +73,7 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
         await get_data_hard_msg(callback.message, state, skip=True)
     elif get_data_hard_way == "show_find":
         rows = await find_in_db(**await get_kwargs_from_state(state))
-        text = rows_to_str(rows)
+        text = await rows_to_str(rows)
         await edit_or_send_message(bot, callback, state, text=text, kb=keyboards.get_data_hard__choice(rows))
     elif get_data_hard_way == "nothing":
         await callback.answer(texts.nothing_find())
@@ -148,7 +148,7 @@ async def change_(callback: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day, Change.phone], state="*")
 async def change__(message: types.Message, state: FSMContext):
     what = (await state.get_state()).split(":")[-1]
-
+    text = ""
     try:
         row = await PhoneBookRow.get_(**await get_kwargs_from_state(state))
     except Exception as e:
@@ -156,12 +156,16 @@ async def change__(message: types.Message, state: FSMContext):
     else:
         try:
             setattr(row, what, message.text)
+            print(str(row), what, message.text, flush=True)
             await row.save()
         except ValidateError as e:
             text = str(e)
         else:
-            text = texts.success_changed()
-    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
+            # text = texts.success_changed()
+            await actions.change(message, state, row=row)
+    if text:
+        await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
+
 
 
 # ###################FIND##########################
