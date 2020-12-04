@@ -23,7 +23,7 @@ def get_kwargs_from_args(args: list):
 
 def get_kwargs_from_row(row: PhoneBookRow):
     fields = GetDataHard.all_states_names
-    return {i.split(":")[-1]: getattr(row, i) for i in fields}
+    return {i.split(":")[-1]: getattr(row, i.split(":")[-1]) for i in fields}
 
 
 def get_empty_data():
