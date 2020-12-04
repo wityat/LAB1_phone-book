@@ -42,7 +42,7 @@ async def get_kwargs_from_state(state: FSMContext):
 
 async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
     async with state.proxy() as st_data:
-        if args or state:
+        if args or state and not row:
             data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
             data = validate_all(**data, action=st_data["action"])
             st_data.update(data)
