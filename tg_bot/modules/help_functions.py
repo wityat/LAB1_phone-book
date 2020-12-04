@@ -21,6 +21,11 @@ def get_kwargs_from_args(args: list):
     return {fields[i].split(":")[-1]: arg for i, arg in enumerate(args)}
 
 
+def get_kwargs_from_row(row: PhoneBookRow):
+    fields = GetDataHard.all_states_names
+    return {i.split(":")[-1]: getattr(row, i) for i in fields}
+
+
 def get_empty_data():
     fields = GetDataHard.all_states_names
     return {i.split(":")[-1]: None for i in fields}
@@ -42,8 +47,8 @@ async def get_kwargs_from_state(state: FSMContext):
 
 async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
     async with state.proxy() as st_data:
-        if args or state and not row:
-            data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
+        if args or state or row:
+            data = get_kwargs_from_args(args) if args else get_kwargs_from_row(row) if row else await get_kwargs_from_state(state)
             data = validate_all(**data, action=st_data["action"])
             st_data.update(data)
             print("DATA_TO_ACTION DATA: ", data, flush=True)
