@@ -8,6 +8,7 @@ from tg_bot.dialogs.general import texts, keyboards
 from tg_bot.load_all import bot
 from tg_bot.modules.edit_or_send_message import edit_or_send_message
 from tg_bot.modules.filters import Button
+from ...db import exceptions_texts
 from ...modules.help_functions import *
 from ...modules.validation import make_data, validate_names
 
@@ -104,6 +105,9 @@ async def age(message: types.Message, state: FSMContext, row=None):
             age_ = calculate_age(row.birth_day)
             text = texts.age(age_)
     else:
-        age_ = calculate_age(row.birth_day)
-        text = texts.age(age_)
+        if row.birth_day:
+            age_ = calculate_age(row.birth_day)
+            text = texts.age(age_)
+        else:
+            raise ValidateError(exceptions_texts.no_bd())
     await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
