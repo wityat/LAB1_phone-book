@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext
 from tg_bot.db.models import PhoneBookRow
 from tg_bot.dialogs.general import actions
 from tg_bot.modules.states import GetDataHard
-from tg_bot.modules.validation import validate_all
+from tg_bot.modules.validation import validate_all, make_str_from_date
 
 
 async def find_in_db(**kwargs):
@@ -23,7 +23,9 @@ def get_kwargs_from_args(args: list):
 
 def get_kwargs_from_row(row: PhoneBookRow):
     fields = GetDataHard.all_states_names
-    return {i.split(":")[-1]: getattr(row, i.split(":")[-1]) for i in fields}
+    return {i.split(":")[-1]: getattr(row, i.split(":")[-1])
+            if not isinstance(getattr(row, i.split(":")[-1]), date)
+            else make_str_from_date(getattr(row, i.split(":")[-1])) for i in fields}
 
 
 def get_empty_data():
@@ -48,7 +50,7 @@ async def get_kwargs_from_state(state: FSMContext):
 async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
     async with state.proxy() as st_data:
         if args or state or row:
-            data = get_kwargs_from_args(args) if args else get_kwargs_from_row(row) if row else await get_kwargs_from_state(state)
+            data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
             data = validate_all(**data, action=st_data["action"])
             st_data.update(data)
             print("DATA_TO_ACTION DATA: ", data, flush=True)
@@ -59,7 +61,7 @@ async def data_to_action(message: types.Message, state: FSMContext = None, args:
 
 
 async def rows_to_str(rows):
-    return "Записи:\n\n" + "\n\n".join([f"{i+1}. "+str(row) for i, row in enumerate(rows)])
+    return "Записи:\n\n" + "\n\n".join([f"{i + 1}. " + str(row) for i, row in enumerate(rows)])
 
 
 def state_to_readable_word(st: str, add_info=False):

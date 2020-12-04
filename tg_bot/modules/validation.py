@@ -16,6 +16,10 @@ def make_date_from_str(dt: str) -> date:
     return datetime.strptime(dt, "%d.%m.%Y").date()
 
 
+def make_str_from_date(dt: date) -> str:
+    return dt.strftime("%d.%m.%Y")
+
+
 def validate_birth_day(bd: str) -> [str, None]:
     if not isinstance(bd, str) or not bd:
         return bd

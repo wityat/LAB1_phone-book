@@ -16,8 +16,7 @@ from ...modules.validation import make_data, validate_names
 async def delete(message: types.Message, state: FSMContext, row=None):
     if row:
         print("ROW: ", row, flush=True)
-        await state.update_data(get_kwargs_from_args([row.first_name, row.last_name,
-                                                      row.phone, row.birth_day]))
+        await state.update_data(get_kwargs_from_row(row))
     await edit_or_send_message(bot, message, state, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
 
 
