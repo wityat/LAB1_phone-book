@@ -155,9 +155,12 @@ async def change__(message: types.Message, state: FSMContext):
         text = str(e)
     else:
         try:
-            setattr(row, what, message.text)
-            print(str(row), what, message.text, flush=True)
-            await row.save()
+            if "name" in what:
+                await row.delete()
+                setattr(row, what, message.text)
+                await row.save(force_create=True)
+            else:
+                await row.save(force_update=True)
         except ValidateError as e:
             text = str(e)
         else:
