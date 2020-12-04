@@ -47,8 +47,9 @@ async def data_to_action(message: types.Message, state: FSMContext = None, args:
             data = validate_all(**data, action=st_data["action"])
             st_data.update(data)
             print("DATA_TO_ACTION DATA: ", data, flush=True)
-        await (getattr(actions, st_data["action"]))(message, state, row)
+        action = st_data["action"]
         st_data["action"] = None
+    await (getattr(actions, action))(message, state, row)
     await state.reset_state(with_data=False)
 
 
