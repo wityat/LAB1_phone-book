@@ -147,9 +147,8 @@ async def change_(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(custom_state=[Change.first_name, Change.last_name, Change.birth_day, Change.phone], state="*")
 async def change__(message: types.Message, state: FSMContext):
-    async with state.proxy() as st_data:
-        what = (await state.get_state()).split(":")[-1]
-        st_data[what] = message.text
+    what = (await state.get_state()).split(":")[-1]
+
     try:
         row = await PhoneBookRow.get_(**await get_kwargs_from_state(state))
     except Exception as e:
