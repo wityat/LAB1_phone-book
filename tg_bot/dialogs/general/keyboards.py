@@ -20,7 +20,7 @@ get_data_hard__nothing = lambda: KeyboardInline([{_("Ничего не найд�
 
 get_data_hard__choice = lambda rows: KeyboardInline(
     [i for i in chunks({f"{j+1}": f"get_data_hard:{row.hash_name[:20]}" for j, row in enumerate(rows)}, 3)] +
-    [{_("Пропустить"): "get_data_hard:skip"}]).get()
+    [{_("Меню"): "menu"}]).get()
 
 
 choice_yes_no = lambda call: KeyboardInline([{_("Да"): f"{call}:1", _("Нет"): f"{call}:0"}]).get()
