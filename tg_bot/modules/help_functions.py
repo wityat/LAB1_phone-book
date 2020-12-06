@@ -91,7 +91,7 @@ def calculate_age(born):
 
 async def get_birth_day_soon():
     now = datetime.now()
-    next_m = datetime(now.year, now.month+1, now.day)
+    next_m = datetime(now.year, now.month+1 if now.month != 12 else 1, now.day)
     return await PhoneBookRow.filter(birth_day__range=(now.date(), next_m.date()))
 
 

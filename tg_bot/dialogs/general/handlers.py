@@ -97,7 +97,7 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
 
     elif get_data_hard_way == "show_find":
         try:
-            await data_to_action(callback.message, state=state, action="find")
+            await data_to_action(callback.message, state=state, action="find_norm")
         except ValidateError as e:
             await edit_or_send_message(bot, callback, state, text=str(e), kb=keyboards.back_to_menu())
     await callback.answer()
