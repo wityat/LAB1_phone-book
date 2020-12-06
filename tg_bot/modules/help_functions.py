@@ -30,7 +30,7 @@ def get_kwargs_from_row(row: PhoneBookRow):
 
 def get_empty_data():
     fields = GetDataHard.all_states_names
-    return {i.split(":")[-1]: None for i in fields}
+    return {i.split(":")[-1]: None for i in fields}.update({"action": None})
 
 
 async def get_kwargs_from_state(state: FSMContext):
@@ -53,7 +53,7 @@ async def data_to_action(message: types.Message,
                          row: PhoneBookRow = None,
                          action: str = None):
     async with state.proxy() as st_data:
-        action, st_data["action"] = (st_data["action"], None) if not action else (action, st_data["action"])
+        action = st_data["action"] if not action else action
         if args or state and not row:
             data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
             data = validate_all(**data, action=action)
