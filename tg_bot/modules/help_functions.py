@@ -53,12 +53,11 @@ async def data_to_action(message: types.Message,
                          row: PhoneBookRow = None,
                          action: str = None):
     async with state.proxy() as st_data:
-        action = st_data["action"] if not action else action
+        action, st_data["action"] = (st_data["action"], None) if not action else (action, st_data["action"])
         if args or state and not row:
             data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
             data = validate_all(**data, action=action)
             st_data.update(data)
-        st_data["action"] = None
     await (getattr(actions, action))(message, state, row)
     await state.reset_state(with_data=False)
 
