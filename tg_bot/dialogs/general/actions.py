@@ -86,32 +86,16 @@ async def add(message: types.Message, state: FSMContext, row=None):
 
 
 async def change(message: types.Message, state: FSMContext, row=None):
-    data = await get_kwargs_from_state(state)
     if not row:
-        try:
-            row = await PhoneBookRow.get_(**make_data(data))
-        except ValidateError as e:
-            text = str(e)
-            kb = keyboards.back_to_menu()
-        else:
-            text = await rows_to_str([row])
-            kb = keyboards.change_row()
+        text, kb = await find_with_choice(message, state)
     else:
-        text = await rows_to_str([row])
-        kb = keyboards.change_row()
+        text, kb = await rows_to_str([row]), keyboards.change_row()
     await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def age(message: types.Message, state: FSMContext, row=None):
-    data = await get_kwargs_from_state(state)
     if not row:
-        try:
-            row = await PhoneBookRow.get_with_check_bd(**make_data(data))
-        except ValidateError as e:
-            text = str(e)
-        else:
-            age_ = calculate_age(row.birth_day)
-            text = texts.age(age_)
+        text, kb = await find_with_choice(message, state)
     else:
         if row.birth_day:
             age_ = calculate_age(row.birth_day)
