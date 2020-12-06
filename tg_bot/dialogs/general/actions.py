@@ -44,12 +44,15 @@ async def find(message: types.Message, state: FSMContext, row=None):
         try:
             rows = await find_in_db(**make_data(data))
         except Exception as e:
-            text = str(e)
+            text, kb = str(e), keyboards.back_to_menu()
         else:
-            text = await rows_to_str(rows)
+            if rows:
+                text, kb = await rows_to_str(rows), keyboards.choice_row(rows)
+            else:
+                text, kb = texts.nothing_find(), keyboards.back_to_menu()
     else:
-        text = await rows_to_str([row])
-    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
+        text, kb = await rows_to_str([row]), keyboards.back_to_menu()
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def add(message: types.Message, state: FSMContext, row=None):

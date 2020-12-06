@@ -72,14 +72,7 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
     if get_data_hard_way == "skip":
         await get_data_hard_msg(callback.message, state, skip=True)
     elif get_data_hard_way == "show_find":
-        rows = await find_in_db(**await get_kwargs_from_state(state))
-        if rows:
-            text, kb = await rows_to_str(rows), keyboards.get_data_hard__choice(rows)
-        else:
-            text, kb = callback.message.text, keyboards.get_data_hard__nothing()
-        await edit_or_send_message(bot, callback, state, text=text, kb=kb)
-    elif get_data_hard_way == "nothing":
-        await callback.answer(texts.nothing_find())
+        await data_to_action(callback.message, state=state, action="find")
     elif get_data_hard_way:
         row = await PhoneBookRow.get(hash_name__startswith=get_data_hard_way)
         try:

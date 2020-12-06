@@ -15,10 +15,7 @@ get_data = lambda: KeyboardInline([{"1": "get_data:easy", "2": "get_data:hard"}]
 get_data_hard = lambda: KeyboardInline([{_("Показать уже найденные"): "get_data_hard:show_find"},
                                         {_("Пропустить"): "get_data_hard:skip"}]).get()
 
-get_data_hard__nothing = lambda: KeyboardInline([{_("Ничего не найдено"): "get_data_hard:nothing"},
-                                                 {_("Пропустить"): "get_data_hard:skip"}]).get()
-
-get_data_hard__choice = lambda rows: KeyboardInline(
+choice_row = lambda rows: KeyboardInline(
     [i for i in chunks({f"{j+1}": f"get_data_hard:{row.hash_name[:20]}" for j, row in enumerate(rows)}, 3)] +
     [{_("Меню"): "menu"}]).get()
 

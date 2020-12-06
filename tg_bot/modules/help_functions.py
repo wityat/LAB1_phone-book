@@ -47,14 +47,17 @@ async def get_kwargs_from_state(state: FSMContext):
     return kwargs
 
 
-async def data_to_action(message: types.Message, state: FSMContext = None, args: list = None, row: PhoneBookRow = None):
+async def data_to_action(message: types.Message,
+                         state: FSMContext = None,
+                         args: list = None,
+                         row: PhoneBookRow = None,
+                         action: str = None):
     async with state.proxy() as st_data:
+        action = st_data["action"] if not action else action
         if args or state and not row:
             data = get_kwargs_from_args(args) if args else await get_kwargs_from_state(state)
-            data = validate_all(**data, action=st_data["action"])
+            data = validate_all(**data, action=action)
             st_data.update(data)
-            print("DATA_TO_ACTION DATA: ", data, flush=True)
-        action = st_data["action"]
         st_data["action"] = None
     await (getattr(actions, action))(message, state, row)
     await state.reset_state(with_data=False)
