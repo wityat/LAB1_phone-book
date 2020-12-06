@@ -64,7 +64,7 @@ def validate_name(name: str):
 
 
 def validate_names(first_name: str, last_name: str, action=None):
-    if not first_name or not last_name and action == "add":
+    if (not first_name or not last_name) and action == "add":
         raise ValidateError(exceptions_texts.no_fn_or_ln())
     return validate_name(first_name), validate_name(last_name)
 
