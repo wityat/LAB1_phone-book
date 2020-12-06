@@ -29,7 +29,7 @@ async def find_with_choice(message: types.Message, state: FSMContext):
 
 async def delete(message: types.Message, state: FSMContext, row=None):
     if not row:
-        text, kb = find_with_choice(message, state)
+        text, kb = await find_with_choice(message, state)
     else:
         await state.update_data(get_kwargs_from_row(row))
         text, kb = texts.sure_delete(), keyboards.choice_yes_no("delete")
