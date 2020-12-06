@@ -77,14 +77,17 @@ async def get_data_hard(callback: types.CallbackQuery, state: FSMContext, bot_us
             await data_to_action(callback.message, state=state, action="find")
         except ValidateError as e:
             await edit_or_send_message(bot, callback, state, text=str(e), kb=keyboards.back_to_menu())
-
-    elif get_data_hard_way:
-        row = await PhoneBookRow.get(hash_name__startswith=get_data_hard_way)
-        try:
-            await data_to_action(callback.message, state=state, row=row)
-        except ValidateError as e:
-            await edit_or_send_message(bot, callback, state, text=str(e), kb=keyboards.back_to_menu())
     await callback.answer()
+
+
+@dp.callback_query_handler(Button("choice_row", True), state="*")
+async def choice_row(callback: types.CallbackQuery, state: FSMContext):
+    choice_hash = callback.data.split(":")[-1]
+    row = await PhoneBookRow.get(hash_name__startswith=choice_hash)
+    try:
+        await data_to_action(callback.message, state=state, row=row)
+    except ValidateError as e:
+        await edit_or_send_message(bot, callback, state, text=str(e), kb=keyboards.back_to_menu())
 
 
 @dp.message_handler(custom_state=[GetDataHard.first_name, GetDataHard.last_name,
