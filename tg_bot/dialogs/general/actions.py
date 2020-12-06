@@ -15,14 +15,12 @@ from ...modules.validation import make_data, validate_names
 
 async def delete(message: types.Message, state: FSMContext, row=None):
     if row:
-        print("ROW: ", row, flush=True)
         await state.update_data(get_kwargs_from_row(row))
     await edit_or_send_message(bot, message, state, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
 
 
 async def sure_delete(message: types.Message, state: FSMContext):
     data = make_data(await get_kwargs_from_state(state))
-    print("SURE_DELETE DATA", data, flush=True)
     try:
         row = await PhoneBookRow.get_(**data)
     except ValidateError as e:
