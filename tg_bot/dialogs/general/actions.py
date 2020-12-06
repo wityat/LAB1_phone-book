@@ -13,10 +13,27 @@ from ...modules.help_functions import *
 from ...modules.validation import make_data, validate_names
 
 
+async def find_with_choice(message: types.Message, state: FSMContext):
+    data = await get_kwargs_from_state(state)
+    try:
+        rows = await find_in_db(**make_data(data))
+    except Exception as e:
+        text, kb = str(e), keyboards.back_to_menu()
+    else:
+        if rows:
+            text, kb = await rows_to_str(rows), keyboards.choice_row(rows)
+        else:
+            text, kb = texts.nothing_find(), keyboards.back_to_menu()
+    return text, kb
+
+
 async def delete(message: types.Message, state: FSMContext, row=None):
-    if row:
+    if not row:
+        text, kb = find_with_choice(message, state)
+    else:
         await state.update_data(get_kwargs_from_row(row))
-    await edit_or_send_message(bot, message, state, text=texts.sure_delete(), kb=keyboards.choice_yes_no("delete"))
+        text, kb = texts.sure_delete(), keyboards.choice_yes_no("delete")
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
 async def sure_delete(message: types.Message, state: FSMContext):
@@ -40,16 +57,7 @@ async def sure_delete(message: types.Message, state: FSMContext):
 
 async def find(message: types.Message, state: FSMContext, row=None):
     if not row:
-        data = await get_kwargs_from_state(state)
-        try:
-            rows = await find_in_db(**make_data(data))
-        except Exception as e:
-            text, kb = str(e), keyboards.back_to_menu()
-        else:
-            if rows:
-                text, kb = await rows_to_str(rows), keyboards.choice_row(rows)
-            else:
-                text, kb = texts.nothing_find(), keyboards.back_to_menu()
+        text, kb = await find_with_choice(message, state)
     else:
         text, kb = await rows_to_str([row]), keyboards.back_to_menu()
     await edit_or_send_message(bot, message, state, text=text, kb=kb)
