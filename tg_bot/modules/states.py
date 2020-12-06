@@ -5,6 +5,11 @@ class GetDataEasy(StatesGroup):
     me = State()
 
 
+class GetDataBirthDay(StatesGroup):
+    me = State()
+
+
+
 class GetDataHard(StatesGroup):
     first_name = State()
     last_name = State()

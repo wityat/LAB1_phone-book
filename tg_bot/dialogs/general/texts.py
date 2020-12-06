@@ -29,3 +29,7 @@ age = lambda age: _("Возраст человека из этой записи 
 nothing_find = lambda: _("Ничего не найдено!")
 
 try_input_again = lambda: _("Попробуйте ввести снова!")
+
+how_find = lambda: _("Как искать будем?")
+
+get_data_birth_day = lambda: _("Отправьте мне день рождения в формате ДД.ММ")

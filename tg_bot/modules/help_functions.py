@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from itertools import islice
 
 from aiogram import types
@@ -7,7 +7,12 @@ from aiogram.dispatcher import FSMContext
 from tg_bot.db.models import PhoneBookRow
 from tg_bot.dialogs.general import actions
 from tg_bot.modules.states import GetDataHard
-from tg_bot.modules.validation import validate_all, make_str_from_date
+from tg_bot.modules.validation import validate_all, make_str_from_date, make_date_from_str
+
+
+async def find_in_db_by_birthday(**kwargs):
+    d = make_date_from_str(kwargs["birth_day"])
+    return await PhoneBookRow.filter(birth_day__day=d.day, birth_day__month=d.month)
 
 
 async def find_in_db(**kwargs):
@@ -30,7 +35,9 @@ def get_kwargs_from_row(row: PhoneBookRow):
 
 def get_empty_data():
     fields = GetDataHard.all_states_names
-    return {i.split(":")[-1]: None for i in fields}.update({"action": None})
+    x = {i.split(":")[-1]: None for i in fields}
+    x.update({"action": None})
+    return x
 
 
 async def get_kwargs_from_state(state: FSMContext):
@@ -80,6 +87,12 @@ def state_to_readable_word(st: str, add_info=False):
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
+
+async def get_birth_day_soon():
+    now = datetime.now()
+    next_m = datetime(now.year, now.month+1, now.day)
+    return await PhoneBookRow.filter(birth_day__range=(now.date(), next_m.date()))
 
 
 def chunks(data, size=10000):

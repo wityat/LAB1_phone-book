@@ -6,6 +6,7 @@ menu = lambda: KeyboardInline([{_("Все"): "all"},
                                {_("Поиск"): "find", _("Добавить"): "add"},
                                {_("Изменить"): "change", _("Удалить"): "delete"},
                                {_("Возраст"): "age"},
+                               {_("У кого скоро др?"): "birth_day_soon"}
                                ]).get()
 
 back_to_menu = lambda: KeyboardInline([{_("Меню"): "menu"}]).get()
@@ -25,3 +26,6 @@ choice_yes_no = lambda call: KeyboardInline([{_("Да"): f"{call}:1", _("Нет"
 change_row = lambda: KeyboardInline([{_("Изменить имя"): "change:first_name", _("Изменить фамилию"): "change:last_name"},
                                      {_("Изменить номер телефона"): "change:phone", _("Изменить дату рождения"): "change:birth_day"},
                                      {_("Меню"): "menu"}]).get()
+
+how_find = lambda: KeyboardInline([{_("Обычный"): "find_norm", _("По дате рождения"): "find_birth_day"},
+                                   {_("Назад"): "menu"}]).get()

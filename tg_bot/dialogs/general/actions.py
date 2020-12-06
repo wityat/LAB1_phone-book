@@ -13,10 +13,10 @@ from ...modules.help_functions import *
 from ...modules.validation import make_data, validate_names
 
 
-async def find_with_choice(message: types.Message, state: FSMContext):
+async def find_with_choice(message: types.Message, state: FSMContext, bd=None):
     data = await get_kwargs_from_state(state)
     try:
-        rows = await find_in_db(**make_data(data))
+        rows = await find_in_db(**make_data(data)) if not bd else await find_in_db_by_birthday(**make_data(data))
     except Exception as e:
         text, kb = str(e), keyboards.back_to_menu()
     else:
@@ -55,9 +55,17 @@ async def sure_delete(message: types.Message, state: FSMContext):
     await edit_or_send_message(bot, message, state, text=text, kb=kb)
 
 
-async def find(message: types.Message, state: FSMContext, row=None):
+async def find_norm(message: types.Message, state: FSMContext, row=None):
     if not row:
         text, kb = await find_with_choice(message, state)
+    else:
+        text, kb = await rows_to_str([row]), keyboards.back_to_menu()
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
+
+
+async def find_birth_day(message: types.Message, state: FSMContext, row=None):
+    if not row:
+        text, kb = await find_with_choice(message, state, bd=True)
     else:
         text, kb = await rows_to_str([row]), keyboards.back_to_menu()
     await edit_or_send_message(bot, message, state, text=text, kb=kb)

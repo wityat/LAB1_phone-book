@@ -41,7 +41,30 @@ async def all_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUs
     await callback.answer()
 
 
-@dp.callback_query_handler(Button("find") | Button("add") | Button("delete") | Button("change") | Button("age"),
+@dp.callback_query_handler(Button("find"), state="*")
+async def find_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
+    await edit_or_send_message(bot, callback, state, text=texts.how_find(), kb=keyboards.how_find())
+
+
+@dp.callback_query_handler(Button("find_birth_day"), state="*")
+async def find_birth_day_(callback: types.CallbackQuery, state: FSMContext):
+    await state.update_data({"action": callback.data})
+    await edit_or_send_message(bot, callback, state, text=texts.get_data_birth_day(), kb=keyboards.back_to_menu())
+    await GetDataBirthDay.me.set()
+    await callback.answer()
+
+
+@dp.message_handler(state=GetDataBirthDay.me)
+async def get_data_birth_day(message: types.Message, state: FSMContext, bot_user: BotUser):
+    d = validate("birth_day", message.text+".2020")
+    args = ["", "", d]
+    try:
+        await data_to_action(message, state=state, args=args)
+    except ValidateError as e:
+        await edit_or_send_message(bot, message, state, text=str(e), kb=keyboards.back_to_menu())
+
+
+@dp.callback_query_handler(Button("find_norm") | Button("add") | Button("delete") | Button("change") | Button("age"),
                            state="*")
 async def set_action(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     await state.update_data({"action": callback.data})
@@ -172,60 +195,10 @@ async def change__(message: types.Message, state: FSMContext):
         await edit_or_send_message(bot, message, text=text, kb=keyboards.back_to_menu())
 
 
-
-# ###################FIND##########################
-#
-#
-# @dp.callback_query_handler(Button("find"), state="*")
-# async def find_(callback: types.CallbackQuery, bot_user: BotUser):
-#     await edit_or_send_message(bot, callback, state, text=texts.find(), kb=keyboards.find())
-#     await callback.answer()
-#
-#
-# @dp.callback_query_handler(Button("find:", True), state="*")
-# async def find_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
-#     find_num = int(callback.data.slpit(":")[-1])
-#     if find_num == Find.easy:
-#         await edit_or_send_message(bot, callback, state, text=texts.easy_find())
-#         await States.easy_find.set()
-#     elif find_num == Find.hard:
-#         await States.hard_find_fn.set()
-#         await edit_or_send_message(bot, callback, state, text=texts.hard_find_(await state.get_state()), kb=keyboards.hard_find())
-#     await edit_or_send_message(bot, callback, state, text=texts.find(), kb=keyboards.find())
-#     await callback.answer()
-#
-#
-#
-#
-# async def hard_find(what: str, msg_or_call: [types.Message, types.CallbackQuery], state: FSMContext):
-#     st_str = await state.get_state()
-#     await state.update_data({st_str: what})
-#     if st_str == States.hard_find_bd.state:
-#         rows = await find_in_db(**await get_kwargs_from_state(state))
-#         text = await rows_to_str(rows)
-#         kb = keyboards.back_to_menu()
-#     else:
-#         await States.next()
-#         text = texts.hard_find_(await state.get_state())
-#         kb = keyboards.hard_find()
-#     await edit_or_send_message(bot, msg_or_call, state, text=text, kb=kb)
-#
-#
-# @dp.callback_query_handler(Button("hard_find:dont_know", True), state="*")
-# async def hard_find__dont_know(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
-#     await hard_find("", callback, state)
-#     await callback.answer()
-#
-#
-# @dp.message_handler(custom_state=[States.hard_find_bd, States.hard_find_fn, States.hard_find_ln, States.hard_find_phn], state="*")
-# async def hard_find__any_step(message: types.Message, state: FSMContext, bot_user: BotUser):
-#     await hard_find(message.text, message, state)
-#
-#
-# ###################FIND##########################
-#
-#
-# ###################ADD###########################
+@dp.callback_query_handler(Button("birth_day_soon"), state="*")
+async def birth_day_soon(callback: types.CallbackQuery, state: FSMContext):
+    text, kb = await rows_to_str(await get_birth_day_soon()), keyboards.back_to_menu()
+    await edit_or_send_message(bot, callback, state, text=text, kb=kb)
 
 
 @dp.message_handler(state="*")
