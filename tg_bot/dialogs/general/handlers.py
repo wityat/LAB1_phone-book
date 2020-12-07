@@ -45,6 +45,7 @@ async def all_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUs
 @dp.callback_query_handler(Button("find"), state="*")
 async def find_(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
     await edit_or_send_message(bot, callback, state, text=texts.how_find(), kb=keyboards.how_find())
+    await callback.answer()
 
 
 @dp.callback_query_handler(Button("find_birth_day"), state="*")
@@ -58,7 +59,7 @@ async def find_birth_day_(callback: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state=GetDataBirthDay.me)
 async def get_data_birth_day(message: types.Message, state: FSMContext, bot_user: BotUser):
     d = validate("birth_day", message.text+".2020")
-    args = ["", "", d]
+    args = ["", "", "", d]
     try:
         await data_to_action(message, state=state, args=args)
     except ValidateError as e:
@@ -198,6 +199,7 @@ async def change__(message: types.Message, state: FSMContext):
 async def birth_day_soon(callback: types.CallbackQuery, state: FSMContext):
     text, kb = await rows_to_str(await get_birth_day_soon()), keyboards.back_to_menu()
     await edit_or_send_message(bot, callback, state, text=text, kb=kb)
+    await callback.answer()
 
 
 @dp.message_handler(state="*")
