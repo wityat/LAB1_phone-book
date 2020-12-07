@@ -28,8 +28,8 @@ async def get_birth_day_soon():
     now = datetime.now()
     rows = []
     async for row in PhoneBookRow.all():
-        if (row.birth_day and (row.birth_day >= now.day and row.birth_day == now.month) or
-                (row.birth_day <= now.day and row.birth_day == now.month + 1)):
+        if (row.birth_day and ((row.birth_day >= now.day and row.birth_day == now.month) or
+                               (row.birth_day <= now.day and row.birth_day == now.month + 1))):
             rows.append(row)
     return rows
     # return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month=now.month) |
