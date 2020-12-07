@@ -14,7 +14,7 @@ async def find_in_db_by_birthday(**kwargs):
     d = kwargs["birth_day"]
     rows = []
     async for row in PhoneBookRow.all():
-        if row.birth_day == d.day and row.birth_day == d.month:
+        if row and row.birth_day == d.day and row.birth_day == d.month:
             rows.append(row)
     return rows
     # return await PhoneBookRow.filter(birth_day__day=d.day, birth_day__month=d.month)
@@ -28,7 +28,7 @@ async def get_birth_day_soon():
     now = datetime.now()
     rows = []
     async for row in PhoneBookRow.all():
-        if ((row.birth_day >= now.day and row.birth_day == now.month) or
+        if (row and (row.birth_day >= now.day and row.birth_day == now.month) or
                 (row.birth_day <= now.day and row.birth_day == now.month + 1)):
             rows.append(row)
     return rows
