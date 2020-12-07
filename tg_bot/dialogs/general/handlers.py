@@ -58,12 +58,18 @@ async def find_birth_day_(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=GetDataBirthDay.me)
 async def get_data_birth_day(message: types.Message, state: FSMContext, bot_user: BotUser):
-    d = validate("birth_day", message.text+".2020")
-    args = ["", "", "", d]
     try:
-        await data_to_action(message, state=state, args=args)
+        d = validate("birth_day", message.text+".2020")
     except ValidateError as e:
-        await edit_or_send_message(bot, message, state, text=str(e), kb=keyboards.back_to_menu())
+        text = str(e)
+    else:
+        args = ["", "", "", d]
+        try:
+            await data_to_action(message, state=state, args=args)
+            return
+        except ValidateError as e:
+            text = str(e)
+    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
 
 
 @dp.callback_query_handler(Button("find_norm") | Button("add") | Button("delete") | Button("change") | Button("age"),

@@ -3,6 +3,7 @@ from itertools import islice
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from tortoise.query_utils import Q
 
 from tg_bot.db.models import PhoneBookRow
 from tg_bot.dialogs.general import actions
@@ -11,7 +12,7 @@ from tg_bot.modules.validation import validate_all, make_str_from_date, make_dat
 
 
 async def find_in_db_by_birthday(**kwargs):
-    d = make_date_from_str(kwargs["birth_day"])
+    d = kwargs["birth_day"]
     return await PhoneBookRow.filter(birth_day__day=d.day, birth_day__month=d.month)
 
 
@@ -91,8 +92,8 @@ def calculate_age(born):
 
 async def get_birth_day_soon():
     now = datetime.now()
-    next_m = datetime(now.year+(0 if now.month != 12 else 1), now.month+1 if now.month != 12 else 1, now.day)
-    return await PhoneBookRow.filter(birth_day__range=(now.date(), next_m.date()))
+    return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month__eq=now.month) |
+                                       Q(birth_day__day__lte=now.day) & Q(birth_day__month__eq=now.month+1)))
 
 
 def chunks(data, size=10000):
