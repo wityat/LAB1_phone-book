@@ -3,21 +3,37 @@ from itertools import islice
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from tortoise.query_utils import Q
 
 from tg_bot.db.models import PhoneBookRow
 from tg_bot.dialogs.general import actions
 from tg_bot.modules.states import GetDataHard
-from tg_bot.modules.validation import validate_all, make_str_from_date, make_date_from_str
+from tg_bot.modules.validation import validate_all, make_str_from_date
 
 
 async def find_in_db_by_birthday(**kwargs):
     d = kwargs["birth_day"]
-    return await PhoneBookRow.filter(birth_day__day=d.day, birth_day__month=d.month)
+    rows = []
+    async for row in PhoneBookRow.all():
+        if row.birth_day == d.day and row.birth_day == d.month:
+            rows.append(row)
+    return rows
+    # return await PhoneBookRow.filter(birth_day__day=d.day, birth_day__month=d.month)
 
 
 async def find_in_db(**kwargs):
     return await PhoneBookRow.filter(**kwargs)
+
+
+async def get_birth_day_soon():
+    now = datetime.now()
+    rows = []
+    async for row in PhoneBookRow.all():
+        if ((row.birth_day >= now.day and row.birth_day == now.month) or
+                (row.birth_day <= now.day and row.birth_day == now.month + 1)):
+            rows.append(row)
+    return rows
+    # return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month=now.month) |
+    #                                    Q(birth_day__day__lte=now.day) & Q(birth_day__month=now.month+1)))
 
 
 def get_kwargs_from_args(args: list):
@@ -30,8 +46,8 @@ def get_kwargs_from_args(args: list):
 def get_kwargs_from_row(row: PhoneBookRow):
     fields = GetDataHard.all_states_names
     return {i.split(":")[-1]: getattr(row, i.split(":")[-1])
-            if not isinstance(getattr(row, i.split(":")[-1]), date)
-            else make_str_from_date(getattr(row, i.split(":")[-1])) for i in fields}
+    if not isinstance(getattr(row, i.split(":")[-1]), date)
+    else make_str_from_date(getattr(row, i.split(":")[-1])) for i in fields}
 
 
 def get_empty_data():
@@ -88,12 +104,6 @@ def state_to_readable_word(st: str, add_info=False):
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
-
-
-async def get_birth_day_soon():
-    now = datetime.now()
-    return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month=now.month) |
-                                       Q(birth_day__day__lte=now.day) & Q(birth_day__month=now.month+1)))
 
 
 def chunks(data, size=10000):
