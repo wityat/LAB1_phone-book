@@ -92,8 +92,8 @@ def calculate_age(born):
 
 async def get_birth_day_soon():
     now = datetime.now()
-    return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month__eq=now.month) |
-                                       Q(birth_day__day__lte=now.day) & Q(birth_day__month__eq=now.month+1)))
+    return await PhoneBookRow.filter(Q(Q(birth_day__day__gte=now.day) & Q(birth_day__month=now.month) |
+                                       Q(birth_day__day__lte=now.day) & Q(birth_day__month=now.month+1)))
 
 
 def chunks(data, size=10000):
