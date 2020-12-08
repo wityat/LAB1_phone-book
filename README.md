@@ -6,6 +6,7 @@
 https://t.me/IAD_LAB1_BOT
 
 Стек технологий: Python3.8/aiogram/redis/postgreSQL/Tortoise-ORM
+
 Приложение полностью асинхронное.
 
 ### Обязательный функционал
