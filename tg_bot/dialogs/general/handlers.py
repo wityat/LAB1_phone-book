@@ -25,7 +25,7 @@ async def start(message: types.Message, state: FSMContext, bot_user: (BotUser, b
 
 @dp.callback_query_handler(Button("how_use"), state="*")
 async def how_use(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
-    await edit_or_send_message(bot, message, state, text=texts.welcome(), kb=keyboards.menu())
+    await edit_or_send_message(bot, callback, state, text=texts.welcome(), kb=keyboards.menu())
     await callback.answer()
 
 

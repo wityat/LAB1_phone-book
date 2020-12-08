@@ -2,7 +2,7 @@ from ...load_all import _
 from ...modules.help_functions import state_to_readable_word
 
 welcome = lambda: _("Перед началом посмотрите видео, где описываются принципы работы с ботом.\n"
-                    "<a href='https://youtu.be/JVP4zg-wiUY'>Видео</a>")
+                    "<a href=\"https://youtu.be/JVP4zg-wiUY\">Видео</a>")
 
 menu = lambda: _("Меню:")
 
