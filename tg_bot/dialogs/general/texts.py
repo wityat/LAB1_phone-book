@@ -1,6 +1,9 @@
 from ...load_all import _
 from ...modules.help_functions import state_to_readable_word
 
+welcome = lambda: _("Перед началом посмотрите видео, где описываются принципы работы с ботом.\n"
+                    "<a href='https://youtu.be/JVP4zg-wiUY'>Видео</a>")
+
 menu = lambda: _("Меню:")
 
 get_data = lambda: _("1 - Простой ввод (вводите через пробел имя фимилию телефон дата_рождения)\n") + \

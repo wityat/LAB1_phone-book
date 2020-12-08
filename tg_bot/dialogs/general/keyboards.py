@@ -6,7 +6,8 @@ menu = lambda: KeyboardInline([{_("Все"): "all"},
                                {_("Поиск"): "find", _("Добавить"): "add"},
                                {_("Изменить"): "change", _("Удалить"): "delete"},
                                {_("Возраст"): "age"},
-                               {_("У кого скоро др?"): "birth_day_soon"}
+                               {_("У кого скоро др?"): "birth_day_soon"},
+                               {_("Как пользоваться?"): "how_use"}
                                ]).get()
 
 back_to_menu = lambda: KeyboardInline([{_("Меню"): "menu"}]).get()

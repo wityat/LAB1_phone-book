@@ -27,4 +27,4 @@ class GetUserMiddleware(BaseMiddleware):
         except:
             return None
         else:
-            return user
+            return user, _
