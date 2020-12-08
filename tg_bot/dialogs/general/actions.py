@@ -108,7 +108,7 @@ async def age(message: types.Message, state: FSMContext, row=None):
     else:
         if row.birth_day:
             age_ = calculate_age(row.birth_day)
-            text = texts.age(age_)
+            text, kb = texts.age(age_), keyboards.back_to_menu()
         else:
             raise ValidateError(exceptions_texts.no_bd())
-    await edit_or_send_message(bot, message, state, text=text, kb=keyboards.back_to_menu())
+    await edit_or_send_message(bot, message, state, text=text, kb=kb)
