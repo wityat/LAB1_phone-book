@@ -19,13 +19,14 @@ async def menu(message: types.Message, state: FSMContext):
 @dp.message_handler(CommandStart(), state="*")
 async def start(message: types.Message, state: FSMContext, bot_user: (BotUser, bool)):
     if bot_user[1]:
-        await edit_or_send_message(bot, message, state, text=texts.welcome(), kb=keyboards.menu())
-    await menu(message, state)
+        await edit_or_send_message(bot, message, state, text=texts.welcome(), kb=keyboards.back_to_menu())
+    else:
+        await menu(message, state)
 
 
 @dp.callback_query_handler(Button("how_use"), state="*")
 async def how_use(callback: types.CallbackQuery, state: FSMContext, bot_user: BotUser):
-    await edit_or_send_message(bot, callback, state, text=texts.welcome(), kb=keyboards.menu())
+    await edit_or_send_message(bot, callback, state, text=texts.welcome(), kb=keyboards.back_to_menu())
     await callback.answer()
 
 
